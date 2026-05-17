@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LIME — Калькулятор ціноутворення для байерів</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root {
+  --green: #2D6A2D;
+  --green-light: #EAF3DE;
+  --green-mid: #3B6D11;
+  --amber: #854F0B;
+  --amber-light: #FEF3E2;
+  --blue: #185FA5;
+  --blue-light: #E6F1FB;
+  --red-light: #FCEBEB;
+  --red: #A32D2D;
+  --bg: #F7F9F5;
+  --surface: #FFFFFF;
+  --border: #E2EAD8;
+  --text: #1A2410;
+  --muted: #6B7B5E;
+  --mono: 'DM Mono', monospace;
+  --sans: 'DM Sans', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
+
+/* HEADER */
+header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 32px; display: flex; align-items: center; justify-content: space-between; height: 56px; position: sticky; top: 0; z-index: 100; }
+.logo { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 15px; color: var(--green); text-decoration: none; }
+.logo-dot { width: 8px; height: 8px; background: var(--green); border-radius: 50%; }
+.header-right { display: flex; align-items: center; gap: 12px; }
+.header-meta { font-size: 12px; color: var(--muted); }
+.back-btn { font-size: 12px; font-weight: 500; padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 20px; color: var(--muted); text-decoration: none; transition: border-color .15s, color .15s; white-space: nowrap; }
+.back-btn:hover { border-color: var(--green); color: var(--green); }
+
+/* LAYOUT */
+.page { max-width: 1100px; margin: 0 auto; padding: 32px 24px 64px; }
+
+/* INTRO */
+.intro { margin-bottom: 28px; }
+.intro h1 { font-size: 22px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.intro p { font-size: 13px; color: var(--muted); max-width: 580px; }
+
+/* FORMULA */
+.formula { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 24px; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.formula-step { display: flex; align-items: center; gap: 6px; }
+.f-badge { font-family: var(--mono); font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 4px; }
+.f-exw  { background: #F0F4EC; color: var(--green); }
+.f-log  { background: var(--blue-light); color: var(--blue); }
+.f-duty { background: var(--amber-light); color: var(--amber); }
+.f-vat  { background: #FFF3E0; color: #8B5000; }
+.f-cost { background: #F0F0F0; color: #333; }
+.f-ret  { background: var(--green-light); color: var(--green-mid); }
+.f-arr  { color: var(--border); font-size: 16px; }
+
+/* CONTROLS */
+.controls-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; margin-bottom: 24px; }
+.controls-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.ctrl-group { display: flex; flex-direction: column; gap: 8px; }
+.ctrl-label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.ctrl-row { display: flex; align-items: center; gap: 10px; }
+.ctrl-row input[type=range] {
+  flex: 1; -webkit-appearance: none; height: 4px;
+  background: var(--border); border-radius: 2px; outline: none;
+}
+.ctrl-row input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 16px; height: 16px;
+  background: var(--green); border-radius: 50%; cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+.ctrl-val { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text); min-width: 48px; text-align: right; }
+
+/* STATS */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.stat-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+.stat-value { font-size: 20px; font-weight: 600; color: var(--text); }
+.stat-value.green { color: var(--green-mid); }
+
+/* TABS + ACTIONS */
+.toolbar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; }
+.cat-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+.tab { font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; transition: all 0.15s; }
+.tab:hover { border-color: var(--green); color: var(--green); }
+.tab.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+.btn-export { display: flex; align-items: center; gap: 6px; background: var(--green); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--sans); transition: background 0.15s; white-space: nowrap; }
+.btn-export:hover { background: var(--green-mid); }
+.btn-export svg { width: 15px; height: 15px; }
+
+/* TABLE */
+.table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; min-width: 720px; }
+thead th { font-size: 11px; font-weight: 500; color: var(--muted); padding: 10px 12px; text-align: right; border-bottom: 1px solid var(--border); background: var(--bg); white-space: nowrap; text-transform: uppercase; letter-spacing: 0.03em; }
+thead th:first-child { text-align: left; min-width: 175px; }
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--bg); }
+.sep-row td { background: var(--bg); font-size: 11px; font-weight: 600; color: var(--muted); padding: 6px 12px; letter-spacing: 0.05em; text-transform: uppercase; }
+td { padding: 10px 12px; text-align: right; vertical-align: middle; }
+td:first-child { text-align: left; }
+.sku-name { font-weight: 500; font-size: 13px; color: var(--text); }
+.sku-code { font-size: 10px; color: var(--muted); font-family: var(--mono); margin-top: 2px; }
+.c-exw  { color: var(--muted); }
+.c-log  { color: var(--blue); }
+.c-duty { color: var(--amber); }
+.c-vat  { color: #8B5000; }
+.c-cost { font-weight: 600; color: var(--text); }
+.c-ret  { font-weight: 600; color: var(--green-mid); font-size: 13px; }
+.pill { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 6px; border-radius: 4px; font-family: var(--mono); }
+.pill-g { background: var(--green-light); color: var(--green-mid); }
+.pill-r { background: var(--red-light); color: var(--red); }
+
+/* FOOTER NOTE */
+.footnote { margin-top: 20px; font-size: 11px; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; }
+.footnote span { display: flex; align-items: center; gap: 4px; }
+.dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+/* PRINT */
+@media print {
+  header, .controls-wrap, .toolbar .btn-export, .cat-tabs { display: none !important; }
+  body { background: #fff; }
+  .table-wrap { border: none; box-shadow: none; }
+}
+
+@media (max-width: 700px) {
+  .controls-grid { grid-template-columns: 1fr; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+  header { padding: 0 16px; }
+  .page { padding: 20px 16px 48px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">
+    <span class="logo-dot"></span>
+    LIME · Pointrade
+  </a>
+  <div class="header-right">
+    <span class="header-meta">Калькулятор ціноутворення · Для байерів</span>
+    <a href="index.html" class="back-btn">← Каталог</a>
+  </div>
+</header>
+
+<div class="page">
+
+  <div class="intro">
+    <h1>Розрахунок собівартості та роздрібної ціни</h1>
+    <p>Виставте ваш курс долара, маржу та логістику — таблиця перерахується автоматично. Потім скачайте готовий файл Excel.</p>
+  </div>
+
+  <div class="formula">
+    <div class="formula-step"><span class="f-badge f-exw">EXW $</span><span>× курс</span></div>
+    <span class="f-arr">→</span>
+    <div class="formula-step"><span>+ логістика</span><span class="f-badge f-log">15%</span></div>
+    <span class="f-arr">=</span>
+    <div class="formula-step"><span class="f-badge f-log">CIF ₴</span></div>
+    <span class="f-arr">→</span>
+    <div class="formula-step"><span>+ мито</span><span class="f-badge f-duty">5% / 6.5%</span></div>
+    <span class="f-arr">→</span>
+    <div class="formula-step"><span>+ ПДВ</span><span class="f-badge f-vat">20%</span></div>
+    <span class="f-arr">=</span>
+    <div class="formula-step"><span class="f-badge f-cost">Собів. UA ₴</span></div>
+    <span class="f-arr">→</span>
+    <div class="formula-step"><span>÷ (1 − маржа)</span><span class="f-arr">=</span><span class="f-badge f-ret">Роздріб ₴</span></div>
+  </div>
+
+  <div class="controls-wrap">
+    <div class="controls-grid">
+      <div class="ctrl-group">
+        <div class="ctrl-label">Курс долара $/грн</div>
+        <div class="ctrl-row">
+          <input type="range" min="38" max="46" step="0.5" value="41.5" id="rate">
+          <span class="ctrl-val" id="rateVal">41.5 ₴</span>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Маржа мережі %</div>
+        <div class="ctrl-row">
+          <input type="range" min="20" max="60" step="5" value="35" id="margin">
+          <span class="ctrl-val" id="marginVal">35%</span>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">Логістика від EXW %</div>
+        <div class="ctrl-row">
+          <input type="range" min="10" max="25" step="1" value="15" id="logistic">
+          <span class="ctrl-val" id="logVal">15%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="toolbar">
+    <div class="cat-tabs" id="tabs"></div>
+    <button class="btn-export" onclick="exportExcel()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+      </svg>
+      Скачати .xlsx
+    </button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Товар</th>
+          <th>EXW $</th>
+          <th>EXW ₴</th>
+          <th>Логістика ₴</th>
+          <th>CIF ₴</th>
+          <th>Мито ₴</th>
+          <th>ПДВ ₴</th>
+          <th>Собів. UA ₴</th>
+          <th>Роздріб ₴</th>
+          <th>Нац. %</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+
+  <div class="footnote">
+    <span><span class="dot" style="background:var(--green-mid)"></span> Нац. ≥80% — нормальна маржинальність</span>
+    <span><span class="dot" style="background:var(--red)"></span> Нац. &lt;80% — перевірте умови</span>
+    <span>Мито: швабри та аксесуари 5% · вологі серветки 6.5%</span>
+    <span>ПДВ 20% від (CIF + мито)</span>
+  </div>
+
+</div>
+
+<script>
+const CATS_ORDER = ["Spinning Mop","Flat Mop","Spray Mop","Window","Wet Wipes","Запчастини"];
+
+const SKUS = [
+  {code:"PS-0002", name:"Wow Clean&Dirty + педаль",        cat:"Spinning Mop", usd:11.55,  duty:0.05},
+  {code:"PS-0001", name:"Pedal Power Spinning Mop 18L",    cat:"Spinning Mop", usd:7.975,  duty:0.05},
+  {code:"OS-0001", name:"Dark Power Spinning Mop 18L",     cat:"Spinning Mop", usd:5.775,  duty:0.05},
+  {code:"OS-0002", name:"Shadow Spinning Mop 14L",         cat:"Spinning Mop", usd:4.675,  duty:0.05},
+  {code:"TS-0002", name:"Trio Power Flat Mop",             cat:"Flat Mop",     usd:8.195,  duty:0.05},
+  {code:"TS-0001", name:"Pro Flat Mop",                    cat:"Flat Mop",     usd:5.445,  duty:0.05},
+  {code:"CM-0001", name:"Easy Click Hands Free Mop",       cat:"Flat Mop",     usd:4.675,  duty:0.05},
+  {code:"MM-0001", name:"X-Power Flat Mop телескоп",       cat:"Flat Mop",     usd:3.30,   duty:0.05},
+  {code:"MM-0002", name:"X-Power Flat Mop 4-секц.",        cat:"Flat Mop",     usd:3.30,   duty:0.05},
+  {code:"SM-0003", name:"Projet Double Side Spray Mop",    cat:"Spray Mop",    usd:6.105,  duty:0.05},
+  {code:"SM-0001", name:"Projet Spray Mop",                cat:"Spray Mop",    usd:5.445,  duty:0.05},
+  {code:"SM-0002", name:"Projet Spray Mop color box",      cat:"Spray Mop",    usd:5.445,  duty:0.05},
+  {code:"SC-0001", name:"Spray Window Wiper + мікрофібра", cat:"Window",       usd:2.035,  duty:0.05},
+  {code:"WW-0001", name:"Multisurface Wet Wipes 100 шт",   cat:"Wet Wipes",    usd:1.43,   duty:0.065},
+  {code:"WW-0002", name:"Floor Cleaning Mop Towel 50 шт",  cat:"Wet Wipes",    usd:1.76,   duty:0.065},
+  {code:"WW-0003", name:"Classic Lavender 100 шт",         cat:"Wet Wipes",    usd:1.045,  duty:0.065},
+  {code:"WW-0004", name:"Degreasing Surface Towel 100 шт", cat:"Wet Wipes",    usd:1.595,  duty:0.065},
+  {code:"HS-0001", name:"3-in-1 Handle Set",               cat:"Запчастини",   usd:2.365,  duty:0.05},
+  {code:"YP-0003", name:"Spinning Mop Refill мікрофібра",  cat:"Запчастини",   usd:0.517,  duty:0.05},
+  {code:"YP-0006", name:"LIME Spinning Mop Refill 24/уп",  cat:"Запчастини",   usd:0.715,  duty:0.05},
+];
+
+const ALL_CATS = ["Всі", ...CATS_ORDER];
+let activeCat = "Всі";
+
+function r2(n) { return Math.round(n * 100) / 100; }
+function fmt(n) { return Math.round(n).toLocaleString('uk-UA'); }
+
+function calc(s, rate, logPct) {
+  const exw  = s.usd * rate;
+  const log  = exw * (logPct / 100);
+  const cif  = exw + log;
+  const duty = cif * s.duty;
+  const vat  = (cif + duty) * 0.20;
+  const cost = cif + duty + vat;
+  return {exw, log, cif, duty, vat, cost};
+}
+
+function getParams() {
+  return {
+    rate:   +document.getElementById('rate').value,
+    margin: +document.getElementById('margin').value,
+    logPct: +document.getElementById('logistic').value,
+  };
+}
+
+function render() {
+  const {rate, margin, logPct} = getParams();
+  document.getElementById('rateVal').textContent   = rate.toFixed(1) + ' ₴';
+  document.getElementById('marginVal').textContent  = margin + '%';
+  document.getElementById('logVal').textContent     = logPct + '%';
+
+  const list = activeCat === "Всі" ? SKUS : SKUS.filter(s => s.cat === activeCat);
+  const rows = list.map(s => { const c = calc(s, rate, logPct); return {...c, retail: c.cost / (1 - margin/100), markup: 0, s}; });
+  rows.forEach(r => { r.markup = ((r.retail / r.s.usd / rate) - 1) * 100; });
+
+  const costs   = rows.map(r => r.cost);
+  const retails = rows.map(r => r.retail);
+  const avgMark = Math.round(rows.reduce((a,r) => a + r.markup, 0) / rows.length);
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="stat-label">SKU</div><div class="stat-value">${list.length}</div></div>
+    <div class="stat"><div class="stat-label">Собів. UA мін–макс</div><div class="stat-value" style="font-size:14px">${fmt(Math.min(...costs))} – ${fmt(Math.max(...costs))} ₴</div></div>
+    <div class="stat"><div class="stat-label">Роздріб мін–макс</div><div class="stat-value" style="font-size:14px">${fmt(Math.min(...retails))} – ${fmt(Math.max(...retails))} ₴</div></div>
+    <div class="stat"><div class="stat-label">Середнє нац. EXW→роздріб</div><div class="stat-value green">${avgMark}%</div></div>
+  `;
+
+  const groups = activeCat === "Всі"
+    ? CATS_ORDER.map(c => ({cat:c, items: SKUS.filter(s => s.cat === c)})).filter(g => g.items.length)
+    : [{cat: activeCat, items: list}];
+
+  let html = '';
+  groups.forEach(g => {
+    if (activeCat === "Всі") html += `<tr class="sep-row"><td colspan="10">${g.cat}</td></tr>`;
+    g.items.forEach(s => {
+      const c = calc(s, rate, logPct);
+      const retail = c.cost / (1 - margin/100);
+      const markup = ((retail / (s.usd * rate)) - 1) * 100;
+      const dutyLabel = s.duty === 0.065 ? '6.5%' : '5%';
+      html += `<tr>
+        <td><div class="sku-name">${s.name}</div><div class="sku-code">${s.code} · мито ${dutyLabel}</div></td>
+        <td class="c-exw">$${s.usd}</td>
+        <td class="c-exw">${fmt(c.exw)}</td>
+        <td class="c-log">${fmt(c.log)}</td>
+        <td class="c-log">${fmt(c.cif)}</td>
+        <td class="c-duty">${fmt(c.duty)}</td>
+        <td class="c-vat">${fmt(c.vat)}</td>
+        <td class="c-cost">${fmt(c.cost)}</td>
+        <td class="c-ret">${fmt(retail)}</td>
+        <td><span class="pill ${markup >= 80 ? 'pill-g' : 'pill-r'}">${Math.round(markup)}%</span></td>
+      </tr>`;
+    });
+  });
+  document.getElementById('tbody').innerHTML = html;
+}
+
+function exportExcel() {
+  const {rate, margin, logPct} = getParams();
+  const wb = XLSX.utils.book_new();
+
+  const header = [
+    'Код', 'Категорія', 'Назва товару', 'Мито %',
+    'EXW $', 'EXW ₴', 'Логістика ₴', 'CIF ₴',
+    'Мито ₴', 'ПДВ ₴', 'Собів. UA ₴', 'Роздріб ₴', 'Нац. %'
+  ];
+
+  const params = [
+    [`Параметри розрахунку`, '', '', '', '', '', '', '', '', '', '', '', ''],
+    [`Курс $/грн:`, rate.toFixed(1), '', '', '', '', '', '', '', '', '', '', ''],
+    [`Маржа мережі:`, margin + '%', '', '', '', '', '', '', '', '', '', '', ''],
+    [`Логістика від EXW:`, logPct + '%', '', '', '', '', '', '', '', '', '', '', ''],
+    [`Мито: швабри 5%, серветки 6.5%`, '', '', '', '', '', '', '', '', '', '', '', ''],
+    [`ПДВ: 20% від (CIF + мито)`, '', '', '', '', '', '', '', '', '', '', '', ''],
+    [],
+    header
+  ];
+
+  SKUS.forEach(s => {
+    const c = calc(s, rate, logPct);
+    const retail = c.cost / (1 - margin/100);
+    const markup = ((retail / (s.usd * rate)) - 1) * 100;
+    params.push([
+      s.code, s.cat, s.name,
+      s.duty === 0.065 ? '6.5%' : '5%',
+      s.usd,
+      Math.round(c.exw),
+      Math.round(c.log),
+      Math.round(c.cif),
+      Math.round(c.duty),
+      Math.round(c.vat),
+      Math.round(c.cost),
+      Math.round(retail),
+      Math.round(markup) + '%'
+    ]);
+  });
+
+  const ws = XLSX.utils.aoa_to_sheet(params);
+  ws['!cols'] = [
+    {wch:10},{wch:14},{wch:36},{wch:8},
+    {wch:8},{wch:9},{wch:12},{wch:9},
+    {wch:9},{wch:9},{wch:12},{wch:11},{wch:8}
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, 'LIME Ціни');
+  const date = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `LIME_price_${date}_USD${rate.toFixed(1)}_margin${margin}.xlsx`);
+}
+
+// Build tabs
+const tabsEl = document.getElementById('tabs');
+ALL_CATS.forEach(c => {
+  const b = document.createElement('button');
+  b.className = 'tab' + (c === "Всі" ? ' active' : '');
+  b.textContent = c;
+  b.onclick = () => {
+    activeCat = c;
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    render();
+  };
+  tabsEl.appendChild(b);
+});
+
+document.getElementById('rate').oninput = render;
+document.getElementById('margin').oninput = render;
+document.getElementById('logistic').oninput = render;
+render();
+</script>
+</body>
+</html>

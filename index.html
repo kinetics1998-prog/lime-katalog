@@ -71,7 +71,7 @@ body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-featu
 .product{border:1px solid var(--line);border-radius:var(--r);padding:0;background:var(--paper);display:flex;flex-direction:column;gap:0;transition:border-color .2s, transform .15s;overflow:hidden}
 .product:hover{border-color:var(--ink)}
 .p-img{width:100%;aspect-ratio:1/1;background:#fff;display:flex;align-items:center;justify-content:center;overflow:hidden;border-bottom:1px solid var(--line)}
-.p-img img{width:100%;height:100%;object-fit:contain;padding:0;background:#fff}
+.p-img img{width:100%;height:100%;object-fit:contain;padding:10px;background:#fff;box-sizing:border-box}
 .p-body{padding:18px 20px 20px;display:flex;flex-direction:column;gap:14px;flex:1}
 .p-head{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .p-sku{font-family:var(--mono);font-size:10px;letter-spacing:0.08em;color:var(--muted);background:var(--soft);padding:3px 8px;border-radius:4px}
@@ -157,6 +157,8 @@ footer{border-top:1px solid var(--line);padding:32px 18px;background:var(--soft)
 
 /* LANG SWITCHER */
 .lang-sw{display:flex;gap:2px;margin-left:auto}
+.pricer-btn{font-size:11px;font-weight:500;padding:5px 13px;border:1.5px solid var(--line);border-radius:20px;color:var(--muted);text-decoration:none;white-space:nowrap;transition:border-color .15s,color .15s;margin-right:10px}
+.pricer-btn:hover{border-color:var(--lime,#7BB03A);color:var(--lime,#7BB03A)}
 .lang-btn{padding:5px 9px;border:1px solid var(--line);background:none;cursor:pointer;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;border-radius:4px;color:var(--muted);transition:all .15s;text-transform:uppercase}
 .lang-btn:hover{border-color:var(--ink);color:var(--ink)}
 .lang-btn.on{background:var(--ink);color:#fff;border-color:var(--ink)}
@@ -290,6 +292,7 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
   <div class="crumb-wrap">
     <span style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:0.06em;">Pointrade Ltd · <span class="ua">Виробник</span><span class="en">Manufacturer</span></span>
   </div>
+  <a href="pricer.html" target="_blank" class="pricer-btn">📊 Калькулятор ціни</a>
   <div class="lang-sw">
     <button class="lang-btn on" id="lb-ua" onclick="setLang('ua')">UA</button>
     <button class="lang-btn" id="lb-en" onclick="setLang('en')">EN</button>
@@ -1031,7 +1034,7 @@ function renderCat(cat) {
   const items = products.filter(p => p.cat === cat);
   block.innerHTML = items.map(p => `
     <div class="product">
-      <div class="p-img"><img src="img/lime/${p.sku}.jpg?v=3" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'img-ph\\'>'+this.alt+'</div>'"></div>
+      <div class="p-img"><img src="img/lime/${p.sku}.jpg?v=5" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'img-ph\\'>'+this.alt+'</div>'"></div>
       <div class="p-body">
         <div class="p-head">
           <span class="p-sku">${p.sku}</span>
