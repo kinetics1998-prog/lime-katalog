@@ -134,9 +134,11 @@ body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-featu
 
 /* BESTSELLER CARD */
 .bs-card{border:1px solid var(--line);border-radius:var(--r);background:#fff;overflow:hidden;display:grid;grid-template-columns:1fr;gap:0}
-@media(min-width:540px){.bs-card{grid-template-columns:320px 1fr}}
-.bs-img{background:#fff;display:flex;align-items:center;justify-content:center;padding:0;aspect-ratio:1/1;border-right:1px solid var(--line)}
+@media(min-width:540px) and (max-width:759px){.bs-card{grid-template-columns:320px 1fr}}
+.bs-img{background:#fff;display:flex;align-items:center;justify-content:center;padding:0;aspect-ratio:1/1;border-bottom:1px solid var(--line)}
+@media(min-width:540px) and (max-width:759px){.bs-img{border-bottom:none;border-right:1px solid var(--line)}}
 .bs-img img{width:100%;height:100%;object-fit:contain;background:#fff}
+@media(min-width:760px){.bs-grid{grid-template-columns:1fr 1fr !important}}
 .bs-body{padding:20px 22px;display:flex;flex-direction:column;gap:10px;justify-content:center}
 .bs-specs{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:12px}
 .bs-spec-l{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
@@ -655,7 +657,7 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
 
     <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:8px;">
 
-      <div style="display:grid;grid-template-columns:1fr;gap:16px;">
+      <div style="display:grid;grid-template-columns:1fr;gap:16px;" class="bs-grid">
 
         <!-- MM-0001 -->
         <div class="bs-card">
