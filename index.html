@@ -646,7 +646,7 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
 
   <!-- BESTSELLERS BLOCK: TOP-3 LEADERS -->
   <section style="padding:28px 0 8px;border-top:1px solid var(--line);margin-top:8px;">
-    <div class="showcase-eye" style="margin-bottom:10px;"><span class="ua">Лідери продажів · Flat Mop</span><span class="en">Bestsellers · Flat Mop</span></div>
+    <div class="showcase-eye" style="margin-bottom:10px;"><span class="ua">Лідери продажів · Топ-3</span><span class="en">Top Sellers · Best 3</span></div>
     <h2 style="font-family:var(--serif);font-size:clamp(24px,3.5vw,36px);font-weight:600;line-height:1.1;letter-spacing:-0.01em;margin-bottom:6px;">
       <span class="ua">Топ-3 за об'ємом замовлень</span>
       <span class="en">Top-3 by order volume</span>
@@ -766,8 +766,7 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
 <div class="cats">
   <button class="cat-chip on" data-cat="all" onclick="filt('all',this)"><span class="ua">Всі</span><span class="en">All</span></button>
   <button class="cat-chip" data-cat="privlabel" onclick="document.getElementById('private-label').scrollIntoView({behavior:'smooth'});document.querySelectorAll('.cat-chip').forEach(c=>c.classList.remove('on'));this.classList.add('on')" style="background:var(--lime);color:#fff;border-color:var(--lime);">Private Label</button>
-  <button class="cat-chip" data-cat="spinning" onclick="filt('spinning',this)">Spinning Mop</button>
-  <button class="cat-chip" data-cat="flat" onclick="filt('flat',this)">Flat Mop</button>
+  <button class="cat-chip" data-cat="spinning" onclick="filt('spinning',this)"><span class="ua">Системи прибирання</span><span class="en">Cleaning Systems</span></button>
   <button class="cat-chip" data-cat="spray" onclick="filt('spray',this)">Spray Mop</button>
   <button class="cat-chip" data-cat="wipes" onclick="filt('wipes',this)">Wet Wipes</button>
   <button class="cat-chip" data-cat="window" onclick="filt('window',this)">Window</button>
@@ -775,17 +774,10 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
 
 <div class="wrap products">
 
-  <!-- SPINNING MOP -->
+  <!-- CLEANING SYSTEMS -->
   <div class="cat-block" data-cat="spinning">
-    <h2 class="cat-h">Spinning Mop · <span class="ua">Швабри з відром</span><span class="en">Bucket Mop Systems</span></h2>
-    <div class="cat-sub"><span class="ua">Системи з центрифугою. Запатентована педальна система. 13–18 Lt.</span><span class="en">Centrifuge systems. Patented foot pedal. 13–18 Lt capacity.</span></div>
-    <div class="grid"></div>
-  </div>
-
-  <!-- FLAT MOP -->
-  <div class="cat-block" data-cat="flat">
-    <h2 class="cat-h">Flat Mop · <span class="ua">Плоскі швабри</span><span class="en">Flat Mops</span></h2>
-    <div class="cat-sub"><span class="ua">Trio Power, Pro Flat — для ламінату, плитки, паркету. Easy Click та X Power — у топ-3 вище.</span><span class="en">Trio Power, Pro Flat — for laminate, tile, parquet. Easy Click and X Power — in top-3 above.</span></div>
+    <h2 class="cat-h"><span class="ua">Системи для прибирання</span><span class="en">Cleaning Systems</span></h2>
+    <div class="cat-sub"><span class="ua">Spinning Mop з педальною центрифугою та Flat Mop — повне покриття для будь-якого формату торгівлі. 13–18 L.</span><span class="en">Spinning Mop with foot-pedal centrifuge and Flat Mop — full coverage for any retail format. 13–18 L.</span></div>
     <div class="grid"></div>
   </div>
 
@@ -967,16 +959,15 @@ const products = [
     desc:'Надійна класична модель зі збільшеним відром 18 л. Мікрофіброва головка 360° — прибирає під меблями без переміщення. Стабільний попит у масовому сегменті.',
     desc_en:'Reliable classic model with enlarged 18L bucket. 360° microfiber head — cleans under furniture without moving it. Stable mass market demand.',
     specs:[['Розмір','285×510×270 мм'],['Вага','2.06 кг'],['В упак.','1 шт'],['EAN','8682472172038']] },
-  { cat:'spinning', sku:'OS-0002', name:'Shadow Spinning Mop 13 Lt', en:'Spinning Mop', price:'4.68',
+  { cat:'spinning', sku:'OS-0002', name:'Shadow Spinning Mop 14 Lt', en:'Spinning Mop', price:'4.68',
     desc:'Компактна модель для невеликих приміщень — 13 л відро економить місце. Легка 1.48 кг конструкція зручна для кінцевого споживача. Ідеальна для міських квартир.',
     desc_en:'Compact model for small spaces — 13L bucket saves storage room. Lightweight 1.48 kg frame convenient for end users. Perfect for city apartments.',
     specs:[['Розмір','456×253×237 мм'],['Вага','1.48 кг'],['В упак.','1 шт'],['EAN','8682472172007']] },
-  // FLAT
-  { cat:'flat', sku:'TS-0002', name:'Trio Power Flat Mop', en:'3-в-1 система', price:'8.20',
+  { cat:'spinning', sku:'TS-0002', name:'Trio Power Flat Mop', en:'Flat Mop · 3-в-1', price:'8.20',
     desc:'Система 3-в-1: три позиції ручки для прибирання кутів, плінтусів та відкритих площ. Перекриває важкодоступні місця без зусиль. Преміум-сегмент з додатковою цінністю для покупця.',
     desc_en:'3-in-1 system: three handle positions for corners, baseboards and open areas. Reaches hard-to-clean spots effortlessly. Premium segment with extra value for buyers.',
     specs:[['Розмір','303×235×445 мм'],['Вага','2.82 кг'],['В упак.','1 шт'],['EAN','8683649126182']] },
-  { cat:'flat', sku:'TS-0001', name:'Pro Flat Mop', en:'Базова модель', price:'5.45',
+  { cat:'spinning', sku:'TS-0001', name:'Pro Flat Mop', en:'Flat Mop · Базова', price:'5.45',
     desc:'Базова плоска швабра з мікрофіброю для масового ринку. Доступна ціна, легка у використанні, стабільна оборотність. Ідеальний вхідний продукт для нових покупців бренду LIME.',
     desc_en:'Basic flat microfiber mop for the mass market. Accessible price, easy to use, stable shelf turnover. Ideal entry-level product for new LIME customers.',
     specs:[['Розмір','200×244×388 мм'],['Вага','1.60 кг'],['В упак.','1 шт'],['EAN','8682472172052']] },
@@ -1070,7 +1061,7 @@ function renderCat(cat) {
   `).join('');
 }
 
-['spinning','flat','spray','wipes','window'].forEach(renderCat);
+['spinning','spray','wipes','window'].forEach(renderCat);
 
 // LANGUAGE SWITCHER
 function setLang(lang) {
