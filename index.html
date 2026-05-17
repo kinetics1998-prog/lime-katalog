@@ -1031,7 +1031,7 @@ function renderCat(cat) {
   const items = products.filter(p => p.cat === cat);
   block.innerHTML = items.map(p => `
     <div class="product">
-      <div class="p-img"><img src="img/lime/${p.sku}.jpg?v=2" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'img-ph\\'>'+this.alt+'</div>'"></div>
+      <div class="p-img"><img src="img/lime/${p.sku}.jpg?v=3" alt="${p.name}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=\\'img-ph\\'>'+this.alt+'</div>'"></div>
       <div class="p-body">
         <div class="p-head">
           <span class="p-sku">${p.sku}</span>
