@@ -138,8 +138,9 @@ body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-featu
 .bs-img{background:#fff;display:flex;align-items:center;justify-content:center;padding:0;aspect-ratio:1/1;border-bottom:1px solid var(--line)}
 @media(min-width:540px) and (max-width:759px){.bs-img{border-bottom:none;border-right:1px solid var(--line)}}
 .bs-img img{width:100%;height:100%;object-fit:contain;background:#fff}
-@media(min-width:760px){.bs-grid{grid-template-columns:1fr 1fr !important}}
+@media(min-width:760px){.bs-grid{grid-template-columns:repeat(3,1fr) !important}}
 .bs-body{padding:20px 22px;display:flex;flex-direction:column;gap:10px;justify-content:center}
+.bs-desc{font-size:13px;color:var(--muted);line-height:1.55}
 .bs-specs{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:12px}
 .bs-spec-l{font-family:var(--mono);font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
 .bs-spec-v{font-weight:500}
@@ -643,16 +644,16 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
    </div>
   </section>
 
-  <!-- BESTSELLERS BLOCK: X-POWER -->
+  <!-- BESTSELLERS BLOCK: TOP-3 LEADERS -->
   <section style="padding:28px 0 8px;border-top:1px solid var(--line);margin-top:8px;">
     <div class="showcase-eye" style="margin-bottom:10px;"><span class="ua">Лідери продажів · Flat Mop</span><span class="en">Bestsellers · Flat Mop</span></div>
     <h2 style="font-family:var(--serif);font-size:clamp(24px,3.5vw,36px);font-weight:600;line-height:1.1;letter-spacing:-0.01em;margin-bottom:6px;">
-      <span class="ua">X-Power — №2 по об'єму замовлень</span>
-      <span class="en">X-Power — #2 by order volume</span>
+      <span class="ua">Топ-3 за об'ємом замовлень</span>
+      <span class="en">Top-3 by order volume</span>
     </h2>
-    <p style="font-size:14px;color:var(--muted);max-width:560px;line-height:1.6;margin-bottom:24px;">
-      <span class="ua">Плоска швабра з мікрофіброю. Телескопічна або 4-секційна ручка. Стабільний попит у мережах — легко заходить у масовий сегмент поряд з зеленою кліп-системою.</span>
-      <span class="en">Flat mop with microfiber. Telescopic or 4-section handle. Stable demand in retail chains — fits the mass segment alongside the green click system.</span>
+    <p style="font-size:14px;color:var(--muted);max-width:600px;line-height:1.6;margin-bottom:24px;">
+      <span class="ua">Easy Click Hands Free + X-Power Telescopic + X-Power Steel — три моделі що стабільно тримають топ замовлень у мережах. Готові до полиці, з усталеним повторним попитом.</span>
+      <span class="en">Easy Click Hands Free + X-Power Telescopic + X-Power Steel — three models that consistently top retail orders. Shelf-ready, with established repeat demand.</span>
     </p>
 
     <div style="display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:8px;">
@@ -673,6 +674,7 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
               <div class="p-name">X Power Telescopic</div>
               <div class="p-name-en">Телескопічна ручка · Мікрофібра</div>
             </div>
+            <div class="bs-desc"><span class="ua">Плоска мікрофіброва швабра з телескопічною ручкою. Регулюється під будь-який зріст. Легка та маневрена — швидке прибирання без втоми. №2 по об'єму замовлень у мережах.</span><span class="en">Flat microfiber mop with telescopic handle. Adjusts to any height. Light and maneuverable — fast cleaning without fatigue. #2 by order volume in retail chains.</span></div>
             <div class="bs-specs">
               <div><div class="bs-spec-l">В упак.</div><div class="bs-spec-v">16 шт</div></div>
               <div><div class="bs-spec-l">Вага</div><div class="bs-spec-v">8.80 кг</div></div>
@@ -704,6 +706,7 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
               <div class="p-name">X Power Steel</div>
               <div class="p-name-en">4-секційна ручка · Нерж. сталь</div>
             </div>
+            <div class="bs-desc"><span class="ua">Плоска швабра з 4-секційною ручкою з нержавіючої сталі. Компактно складається — зручна для зберігання. Той самий X Power у більш доступному ціновому форматі.</span><span class="en">Flat mop with 4-section stainless steel handle. Folds compact — easy to store. Same X Power in a more accessible price format.</span></div>
             <div class="bs-specs">
               <div><div class="bs-spec-l">В упак.</div><div class="bs-spec-v">12 шт</div></div>
               <div><div class="bs-spec-l">Вага</div><div class="bs-spec-v">6.78 кг</div></div>
@@ -717,6 +720,38 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
             <div class="bs-actions">
               <a href="https://wa.me/380952855582?text=Доброго дня! Цікавить MM-0002 — X-Power Flat Mop 4-секційна. Можна прайс і умови?" target="_blank" class="bs-btn">📱 WhatsApp</a>
               <a href="mailto:ruslan@pointrade.com.tr?subject=LIME MM-0002 — X-Power Flat Mop&body=Цікавить X-Power Flat Mop MM-0002 (4-секційна). Можна умови поставки?" class="bs-btn">✉ Email</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- CM-0001 -->
+        <div class="bs-card">
+          <div class="bs-img">
+            <img src="img/lime/CM-0001.jpg?v=2" alt="Easy Click Hands Free Mop CM-0001" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<div class=&quot;img-ph&quot;>'+this.alt+'</div>'">
+          </div>
+          <div class="bs-body">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <span class="p-sku">CM-0001</span>
+              <span class="p-badge new"><span class="ua">Новинка</span><span class="en">New</span></span>
+            </div>
+            <div>
+              <div class="p-name">Easy Click Hands Free Mop</div>
+              <div class="p-name-en">Flat Mop · Без рук · Click System</div>
+            </div>
+            <div class="bs-desc"><span class="ua">Спеціально розроблена для вологих серветок LIME. Клік-система — зміна насадки за 1 секунду без торкання руками. Не потрібні вода і відро: вставили серветку — почали прибирати. Гігієнічно на 100%.</span><span class="en">Specially designed for LIME wet wipes. Click system — swap pad in 1 second without touching it. No water or bucket needed: insert wipe and start cleaning. 100% hygienic.</span></div>
+            <div class="bs-specs">
+              <div><div class="bs-spec-l">В упак.</div><div class="bs-spec-v">10 шт</div></div>
+              <div><div class="bs-spec-l">Вага</div><div class="bs-spec-v">8.30 кг</div></div>
+              <div><div class="bs-spec-l">EAN</div><div class="bs-spec-v">8683649126229</div></div>
+              <div><div class="bs-spec-l">40' HC</div><div class="bs-spec-v">17 000 шт</div></div>
+            </div>
+            <div class="bs-price">
+              <span class="p-price-l">Опт від</span>
+              <span class="p-price">$4.68 <small>/ шт</small></span>
+            </div>
+            <div class="bs-actions">
+              <a href="https://wa.me/380952855582?text=Доброго дня! Цікавить CM-0001 — Easy Click Hands Free Mop. Можна прайс і умови?" target="_blank" class="bs-btn">📱 WhatsApp</a>
+              <a href="mailto:ruslan@pointrade.com.tr?subject=LIME CM-0001 — Easy Click Hands Free Mop&body=Цікавить Easy Click Hands Free Mop CM-0001. Можна умови поставки?" class="bs-btn">✉ Email</a>
             </div>
           </div>
         </div>
@@ -750,7 +785,7 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
   <!-- FLAT MOP -->
   <div class="cat-block" data-cat="flat">
     <h2 class="cat-h">Flat Mop · <span class="ua">Плоскі швабри</span><span class="en">Flat Mops</span></h2>
-    <div class="cat-sub"><span class="ua">Easy Click Hands Free, X Power, Trio Power, Pro Flat — для ламінату, плитки, паркету.</span><span class="en">Easy Click Hands Free, X Power, Trio Power, Pro Flat — for laminate, tile, parquet.</span></div>
+    <div class="cat-sub"><span class="ua">Trio Power, Pro Flat — для ламінату, плитки, паркету. Easy Click та X Power — у топ-3 вище.</span><span class="en">Trio Power, Pro Flat — for laminate, tile, parquet. Easy Click and X Power — in top-3 above.</span></div>
     <div class="grid"></div>
   </div>
 
@@ -936,10 +971,6 @@ const products = [
     desc:'Компактна модель для невеликих приміщень — 13 л відро економить місце. Легка 1.48 кг конструкція зручна для кінцевого споживача. Ідеальна для міських квартир.',
     desc_en:'Compact model for small spaces — 13L bucket saves storage room. Lightweight 1.48 kg frame convenient for end users. Perfect for city apartments.',
     specs:[['Розмір','456×253×237 мм'],['Вага','1.48 кг'],['В упак.','1 шт'],['EAN','8682472172007']] },
-  { cat:'flat', sku:'CM-0001', name:'Easy Click Hands Free Mop', en:'Flat Mop · Без рук', new:true, price:'4.68',
-    desc:'Спеціально розроблена для вологих серветок LIME. Клік-система — зміна насадки за 1 секунду без торкання руками. Не потрібні вода і відро: вставили серветку — почали прибирати. Гігієнічно на 100%.',
-    desc_en:'Specially designed for LIME wet wipes. Click system — swap pad in 1 second without touching it. No water or bucket needed: insert wipe and start cleaning. 100% hygienic.',
-    specs:[['Розмір','416×480×240 мм'],['Вага','8.30 кг'],['В упак.','10 шт'],['EAN','8683649126229']] },
   // FLAT
   { cat:'flat', sku:'TS-0002', name:'Trio Power Flat Mop', en:'3-в-1 система', price:'8.20',
     desc:'Система 3-в-1: три позиції ручки для прибирання кутів, плінтусів та відкритих площ. Перекриває важкодоступні місця без зусиль. Преміум-сегмент з додатковою цінністю для покупця.',
@@ -966,15 +997,6 @@ const products = [
     desc:'Той самий Projet Spray Mop у подарунковій кольоровій коробці. Упаковка підвищує сприйняту цінність — легше ставити вищу ціну. Фасування 12 шт прискорює оборотність на полиці.',
     desc_en:'Same Projet Spray Mop in a gift color box. Packaging increases perceived value — easier to price higher. 12-unit packing speeds up shelf turnover.',
     specs:[['Розмір','560×415×350 мм'],['Вага','9.55 кг'],['В упак.','12 шт'],['EAN','8682472172021']] },
-  // X-POWER (FLAT)
-  { cat:'flat', sku:'MM-0001', name:'X Power Telescopic', en:'Телескопічна ручка · Мікрофібра', price:'3.30',
-    desc:'Плоска мікрофіброва швабра з телескопічною ручкою. Регулюється під будь-який зріст. Легка та маневрена — швидке прибирання без втоми. №2 по об\'єму замовлень у мережах.',
-    desc_en:'Flat microfiber mop with telescopic handle. Adjusts to any height. Light and maneuverable — fast cleaning without fatigue. #2 by order volume in retail chains.',
-    specs:[['Розмір','1320×280×165 мм'],['Вага','8.80 кг'],['В упак.','16 шт'],['EAN','8684646050517']] },
-  { cat:'flat', sku:'MM-0002', name:'X Power Steel', en:'4-секц. ручка · Нерж. сталь', price:'3.30',
-    desc:'Плоска швабра з 4-секційною ручкою з нержавіючої сталі. Компактно складається — зручна для зберігання. Той самий X Power у більш доступному ціновому форматі.',
-    desc_en:'Flat mop with 4-section stainless steel handle. Folds compact — easy to store. Same X Power in a more accessible price format.',
-    specs:[['Розмір','400×290×340 мм'],['Вага','6.78 кг'],['В упак.','12 шт'],['EAN','8684646050616']] },
   // WINDOW
   { cat:'window', sku:'SC-0001', name:'Spray Window Wiper + Microfiber', en:'Window · Мікрофібра', price:'2.04',
     desc:'Спрей-скребок для вікон у комплекті з мікрофіброю. Подвійна дія: зволожує та знімає воду за один прохід. Без розводів. Фасування 4 шт — зручно для стелажної викладки.',
