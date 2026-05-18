@@ -39,6 +39,13 @@ body{font-family:var(--sans);background:var(--paper);color:var(--ink);font-featu
 .hero-desc{font-size:16px;color:var(--muted);line-height:1.65;margin-bottom:24px;max-width:520px}
 .hero-desc strong{color:var(--ink);font-weight:500}
 .hero-meta{display:flex;flex-wrap:wrap;gap:12px;margin-bottom:8px}
+.hero-dl{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.dl-btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;background:var(--ink);color:#fff;text-decoration:none;border-radius:var(--r);font-family:var(--sans);font-size:14px;font-weight:500;line-height:1.2;transition:transform .12s ease, background .15s ease, box-shadow .15s ease;border:1.5px solid var(--ink)}
+.dl-btn:hover{background:var(--lime-dark);border-color:var(--lime-dark);transform:translateY(-1px);box-shadow:0 4px 14px rgba(45,122,50,0.25)}
+.dl-btn .dl-icon{font-size:18px;line-height:1}
+.dl-btn .dl-meta{display:block;font-family:var(--mono);font-size:10px;font-weight:400;opacity:0.7;letter-spacing:0.04em;margin-top:1px}
+.dl-btn--alt{background:#fff;color:var(--ink);border:1.5px solid var(--line-2)}
+.dl-btn--alt:hover{background:var(--lime-soft);color:var(--lime-dark);border-color:var(--lime)}
 .meta-chip{display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;padding:6px 12px;background:var(--soft);border-radius:99px;color:var(--ink);font-weight:500}
 .meta-chip .dot{width:6px;height:6px;background:var(--lime);border-radius:50%}
 .hero-card{background:var(--lime-soft);border-radius:var(--r);padding:28px;border:1px solid rgba(67,160,71,0.2);position:relative}
@@ -324,6 +331,22 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
         <span class="meta-chip"><span class="dot"></span><span class="ua">Опт від $1.05/шт</span><span class="en">Wholesale from $1.05/pc</span></span>
         <span class="meta-chip"><span class="dot"></span><span class="ua">Маржа 30–50%</span><span class="en">Margin 30–50%</span></span>
         <span class="meta-chip"><span class="dot"></span><span class="ua">Експорт у 20+ країн</span><span class="en">Export to 20+ countries</span></span>
+      </div>
+      <div class="hero-dl">
+        <a class="dl-btn" href="assets/downloads/LIME-catalog-2026.pdf" download>
+          <span class="dl-icon">📥</span>
+          <span>
+            <span class="ua">Скачати каталог</span><span class="en">Download catalog</span>
+            <span class="dl-meta">PDF · 10 MB</span>
+          </span>
+        </a>
+        <a class="dl-btn dl-btn--alt" href="assets/downloads/LIME-product-data-sheet.xlsx" download>
+          <span class="dl-icon">📊</span>
+          <span>
+            <span class="ua">Логістика і EAN</span><span class="en">Logistics & EAN</span>
+            <span class="dl-meta">XLSX · 21 KB</span>
+          </span>
+        </a>
       </div>
     </div>
     <div class="hero-card">
