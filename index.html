@@ -285,6 +285,11 @@ body.lang-en .pl-sub.en{display:block!important}
 .micro-cta-btn{flex-shrink:0;display:inline-flex;align-items:center;gap:6px;padding:10px 18px;background:var(--wa);color:#fff;font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;border-radius:var(--r);transition:opacity .15s}
 .micro-cta-btn:hover{opacity:0.88}
 
+/* ============== KP FORM RESPONSIVE ============== */
+.kp-form{grid-template-columns:1fr}
+@media(min-width:640px){.kp-form{grid-template-columns:1fr 1fr}}
+.kp-form > label[style*="grid-column:1/-1"]{grid-column:1/-1}
+
 /* ============== STICKY MOBILE CTA BAR ============== */
 .sticky-cta{display:none}
 @media(max-width:760px){
@@ -298,21 +303,27 @@ body.lang-en .pl-sub.en{display:block!important}
 
 /* ============== MOBILE COMPACT PRODUCT CARD ============== */
 @media(max-width:540px){
-  .grid{gap:10px}
-  .product{flex-direction:row;align-items:stretch}
-  .p-img{width:118px;flex-shrink:0;aspect-ratio:1/1;border-bottom:none;border-right:1px solid var(--line)}
-  .p-img img{padding:10px}
-  .p-body{padding:12px 14px;gap:8px;min-width:0}
-  .p-head{gap:6px}
-  .p-name{font-size:15px;margin-bottom:2px}
-  .p-name-en{font-size:10px;margin-bottom:8px}
-  .p-desc{font-size:11px;line-height:1.5;padding-top:0;border-top:none;display:none}
+  .grid{grid-template-columns:1fr 1fr;gap:8px}
+  .product{flex-direction:column;align-items:stretch}
+  .p-img{width:100%;aspect-ratio:1/1;border-bottom:1px solid var(--line);border-right:none}
+  .p-img img{padding:8px}
+  .p-body{padding:10px 12px 12px;gap:6px;min-width:0}
+  .p-head{gap:4px}
+  .p-sku{font-size:9px;padding:2px 6px}
+  .p-badge{font-size:8px;padding:2px 5px}
+  .p-name{font-size:14px;margin-bottom:2px;line-height:1.15}
+  .p-name-en{font-size:9px;margin-bottom:4px}
+  .p-desc{display:none}
   .p-specs{display:none}
-  .p-price-row{padding-top:8px}
-  .p-price{font-size:18px}
-  .p-actions{gap:4px;margin-top:6px}
-  .p-btn{padding:8px 4px;font-size:9px;letter-spacing:0.05em}
-  .p-btn .p-btn-ic{font-size:11px}
+  .p-price-row{padding-top:6px;flex-direction:column;align-items:flex-start;gap:0}
+  .p-price-l{font-size:8px}
+  .p-price{font-size:16px}
+  .p-price small{font-size:9px}
+  .p-actions{gap:4px;margin-top:4px;flex-direction:column}
+  .p-btn{padding:8px 4px;font-size:9px;letter-spacing:0.05em;width:100%}
+  .p-btn.tg{display:none} /* hide Telegram on mobile — WhatsApp + Email достатньо */
+  .cat-h{font-size:22px;line-height:1.1}
+  .cat-sub{font-size:12px}
 }
 
 /* IMG PLACEHOLDER (onerror fallback) */
@@ -983,9 +994,9 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
         <span style="width:22px;height:1px;background:var(--lime);display:inline-block;"></span>
         <span class="ua">Запит комерційної пропозиції</span><span class="en">Commercial proposal request</span>
       </div>
-      <h2 style="font-family:var(--serif);font-size:clamp(28px,4vw,40px);font-weight:700;line-height:1.1;letter-spacing:-0.02em;margin-bottom:14px;">
-        <span class="ua">Отримати КП за <em style="color:var(--lime);font-style:italic;">1-2 робочих дні</em></span>
-        <span class="en">Get a quote within <em style="color:var(--lime);font-style:italic;">1-2 business days</em></span>
+      <h2 style="font-family:var(--serif);font-size:clamp(24px,4vw,40px);font-weight:700;line-height:1.15;letter-spacing:-0.02em;margin-bottom:14px;word-wrap:break-word;hyphens:auto;">
+        <span class="ua">Отримати КП за <em style="color:var(--lime);font-style:italic;">1–2 робочих дні</em></span>
+        <span class="en">Get a quote within <em style="color:var(--lime);font-style:italic;">1–2 business days</em></span>
       </h2>
       <p style="font-size:15px;color:var(--muted);line-height:1.65;max-width:580px;margin-bottom:20px;">
         <span class="ua">Заповніть форму — підготуємо комерційну пропозицію під ваш формат: категорійний аналіз, прайс під обсяг, умови поставки, зразки.</span>
@@ -1001,7 +1012,7 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
       </div>
     </div>
 
-    <form id="kp-form" onsubmit="return submitKP(event)" style="display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:720px;">
+    <form id="kp-form" class="kp-form" onsubmit="return submitKP(event)" style="display:grid;gap:14px;max-width:720px;">
       <label style="display:flex;flex-direction:column;gap:6px;grid-column:1/-1;">
         <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;color:var(--muted);text-transform:uppercase;"><span class="ua">Мережа / компанія *</span><span class="en">Network / company *</span></span>
         <input required type="text" name="company" placeholder="Metro / Аврора / ТОВ ..." data-ph-ua="Metro / Аврора / ТОВ ..." data-ph-en="Metro / Avrora / Ltd ..." style="padding:12px 14px;border:1px solid var(--line-2);border-radius:var(--r);font-family:var(--sans);font-size:14px;background:#fff;outline:none;transition:border-color .15s;" onfocus="this.style.borderColor='var(--lime)'" onblur="this.style.borderColor='var(--line-2)'">
@@ -1044,13 +1055,13 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
         <textarea name="comment" rows="3" placeholder="Орієнтовний обсяг, формат, терміни..." data-ph-ua="Орієнтовний обсяг, формат, терміни..." data-ph-en="Expected volume, format, timeline..." style="padding:12px 14px;border:1px solid var(--line-2);border-radius:var(--r);font-family:var(--sans);font-size:14px;background:#fff;outline:none;resize:vertical;transition:border-color .15s;" onfocus="this.style.borderColor='var(--lime)'" onblur="this.style.borderColor='var(--line-2)'"></textarea>
       </label>
 
-      <div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-top:6px;">
-        <button type="submit" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:var(--lime);color:#fff;border:none;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border-radius:var(--r);cursor:pointer;transition:background .15s;" onmouseover="this.style.background='var(--lime-dark)'" onmouseout="this.style.background='var(--lime)'">
+      <div style="grid-column:1/-1;display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:6px;">
+        <button type="submit" style="display:inline-flex;align-items:center;gap:8px;padding:14px 24px;background:var(--lime);color:#fff;border:none;font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;border-radius:var(--r);cursor:pointer;transition:background .15s;white-space:nowrap;" onmouseover="this.style.background='var(--lime-dark)'" onmouseout="this.style.background='var(--lime)'">
           <span class="ua">Надіслати запит</span><span class="en">Send request</span> →
         </button>
-        <span style="font-size:12px;color:var(--muted);">
+        <span style="font-size:12px;color:var(--muted);flex:1;min-width:180px;">
           <span class="ua">або напишіть у </span><span class="en">or message us on </span>
-          <a href="https://wa.me/380952855582?text=Доброго%20дня!%20Цікавить%20LIME%20для%20нашої%20мережі." target="_blank" rel="noopener" style="color:var(--lime-dark);text-decoration:underline;">WhatsApp</a>
+          <a href="https://wa.me/380952855582?text=Доброго%20дня!%20Цікавить%20LIME%20для%20нашої%20мережі." target="_blank" rel="noopener" style="color:var(--lime-dark);text-decoration:underline;white-space:nowrap;">WhatsApp</a>
         </span>
       </div>
     </form>
