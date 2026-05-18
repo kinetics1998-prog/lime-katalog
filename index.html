@@ -76,7 +76,8 @@ section[id]{scroll-margin-top:72px}
 .hero-dl{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
 .dl-btn{display:inline-flex;align-items:center;gap:10px;padding:12px 18px;background:var(--ink);color:#fff;text-decoration:none;border-radius:var(--r);font-family:var(--sans);font-size:14px;font-weight:500;line-height:1.2;transition:transform .12s ease, background .15s ease, box-shadow .15s ease;border:1.5px solid var(--ink)}
 .dl-btn:hover{background:var(--lime-dark);border-color:var(--lime-dark);transform:translateY(-1px);box-shadow:0 4px 14px rgba(45,122,50,0.25)}
-.dl-btn .dl-icon{font-size:18px;line-height:1}
+.dl-btn .dl-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;flex-shrink:0}
+.dl-btn .dl-icon svg{width:20px;height:20px;stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .dl-btn .dl-meta{display:block;font-family:var(--mono);font-size:10px;font-weight:400;opacity:0.7;letter-spacing:0.04em;margin-top:1px}
 .dl-btn--alt{background:#fff;color:var(--ink);border:1.5px solid var(--line-2)}
 .dl-btn--alt:hover{background:var(--lime-soft);color:var(--lime-dark);border-color:var(--lime)}
@@ -228,7 +229,8 @@ footer{border-top:1px solid var(--line);padding:32px 18px;background:var(--soft)
 .pl-services{display:grid;grid-template-columns:1fr;gap:16px;margin-bottom:32px}
 @media(min-width:760px){.pl-services{grid-template-columns:1fr 1fr 1fr;gap:18px}}
 .pl-services-item{padding:24px 26px;background:var(--soft);border:1px solid var(--line);border-radius:var(--r);display:flex;flex-direction:column;gap:8px}
-.pl-services-icon{font-size:28px;line-height:1;margin-bottom:4px}
+.pl-services-icon{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;margin-bottom:8px;color:var(--lime-dark)}
+.pl-services-icon svg{width:32px;height:32px;stroke:currentColor;stroke-width:1.5;fill:none;stroke-linecap:round;stroke-linejoin:round}
 .pl-services-h{font-family:var(--serif);font-size:19px;font-weight:600;line-height:1.2;letter-spacing:-0.01em;color:var(--ink)}
 .pl-services-p{font-size:13px;color:var(--muted);line-height:1.65;font-weight:400}
 /* Bilingual fix for .pl-sub paragraph */
@@ -392,14 +394,14 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
       </div>
       <div class="hero-dl">
         <a class="dl-btn" href="assets/downloads/LIME-catalog-2026.pdf" download>
-          <span class="dl-icon">📥</span>
+          <span class="dl-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></span>
           <span>
             <span class="ua">Скачати каталог</span><span class="en">Download catalog</span>
             <span class="dl-meta">PDF · 3 MB</span>
           </span>
         </a>
         <a class="dl-btn dl-btn--alt" href="assets/downloads/LIME-product-data-sheet.xlsx" download>
-          <span class="dl-icon">📊</span>
+          <span class="dl-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg></span>
           <span>
             <span class="ua">Логістика і EAN</span><span class="en">Logistics & EAN</span>
             <span class="dl-meta">XLSX · 21 KB</span>
@@ -661,7 +663,7 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
     <!-- Розширений опис послуги (без прикладів продуктів) -->
     <div class="pl-services">
       <div class="pl-services-item">
-        <div class="pl-services-icon">🏭</div>
+        <div class="pl-services-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2 20V8.5l5 3.5V8.5l5 3.5V8.5l5 3.5V4h3v16z"/><line x1="2" y1="20" x2="22" y2="20"/><rect x="6" y="14" width="2" height="3"/><rect x="11" y="14" width="2" height="3"/><rect x="16" y="14" width="2" height="3"/></svg></div>
         <h3 class="pl-services-h">
           <span class="ua">Власне виробництво</span>
           <span class="en">Own production</span>
@@ -672,7 +674,7 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
         </p>
       </div>
       <div class="pl-services-item">
-        <div class="pl-services-icon">🎨</div>
+        <div class="pl-services-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="1" fill="currentColor" stroke="none"/><circle cx="17.5" cy="10.5" r="1" fill="currentColor" stroke="none"/><circle cx="8.5" cy="7.5" r="1" fill="currentColor" stroke="none"/><circle cx="6.5" cy="12.5" r="1" fill="currentColor" stroke="none"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg></div>
         <h3 class="pl-services-h">
           <span class="ua">Повна кастомізація</span>
           <span class="en">Full customisation</span>
@@ -683,7 +685,7 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
         </p>
       </div>
       <div class="pl-services-item">
-        <div class="pl-services-icon">📦</div>
+        <div class="pl-services-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16.5 9.4 7.5 4.21"/><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg></div>
         <h3 class="pl-services-h">
           <span class="ua">Без зміни MOQ</span>
           <span class="en">No MOQ change</span>
