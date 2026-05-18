@@ -283,9 +283,9 @@ td:first-child { text-align: left; }
         <div class="qc-slider">
           <div class="qc-slider-row">
             <span class="qc-slider-label">Ваша роздрібна ціна</span>
-            <span class="qc-slider-val" id="qRetailDisplay">150 <small>грн</small></span>
+            <span class="qc-slider-val" id="qRetailDisplay">189 <small>грн</small></span>
           </div>
-          <input type="range" id="qRetail" min="50" max="800" value="150" step="5">
+          <input type="range" id="qRetail" min="50" max="800" value="189" step="5">
         </div>
 
         <div class="qc-slider">
@@ -540,7 +540,7 @@ const QUICK_SKUS = SKUS.filter(s =>
   ['PS-0001','OS-0001','CM-0001','MM-0001','SM-0001','SC-0001','WW-0001','WW-0002','WW-0003'].includes(s.code)
 );
 
-let qSku = QUICK_SKUS[2]; // Easy Click default
+let qSku = QUICK_SKUS.find(s => s.code === 'WW-0002') || QUICK_SKUS[0]; // Floor Cleaning Mop Towel — найвигідніший cross-sell для мереж
 
 const skuGrid = document.getElementById('skuGrid');
 QUICK_SKUS.forEach(s => {
