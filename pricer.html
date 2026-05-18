@@ -4,13 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LIME — Калькулятор ціноутворення для байерів</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400;1,9..144,500;1,9..144,600&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root {
   --green: #2D6A2D;
   --green-light: #EAF3DE;
   --green-mid: #3B6D11;
+  --lime: #43A047;
+  --lime-light: #81C784;
+  --lime-dark: #2E7D32;
   --amber: #854F0B;
   --amber-light: #FEF3E2;
   --blue: #185FA5;
@@ -22,8 +27,10 @@
   --border: #E2EAD8;
   --text: #1A2410;
   --muted: #6B7B5E;
+  --ink: #1a1a18;
   --mono: 'DM Mono', monospace;
   --sans: 'DM Sans', sans-serif;
+  --serif: 'Fraunces', Georgia, serif;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: var(--sans); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; }
@@ -37,8 +44,17 @@ header { background: var(--surface); border-bottom: 1px solid var(--border); pad
 .back-btn { font-size: 12px; font-weight: 500; padding: 5px 12px; border: 1.5px solid var(--border); border-radius: 20px; color: var(--muted); text-decoration: none; transition: border-color .15s, color .15s; white-space: nowrap; }
 .back-btn:hover { border-color: var(--green); color: var(--green); }
 
+/* PAGE TABS */
+.page-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); background: var(--surface); padding: 0 32px; }
+.page-tab { font-size: 13px; font-weight: 500; padding: 12px 20px; border: none; background: none; color: var(--muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.15s; font-family: var(--sans); display: inline-flex; align-items: center; gap: 8px; }
+.page-tab:hover { color: var(--green); }
+.page-tab.active { color: var(--green); border-bottom-color: var(--green); }
+.page-tab svg { width: 14px; height: 14px; stroke-width: 1.75; }
+
 /* LAYOUT */
 .page { max-width: 1100px; margin: 0 auto; padding: 32px 24px 64px; }
+.panel { display: none; }
+.panel.active { display: block; }
 
 /* INTRO */
 .intro { margin-bottom: 28px; }
@@ -63,15 +79,8 @@ header { background: var(--surface); border-bottom: 1px solid var(--border); pad
 .ctrl-group { display: flex; flex-direction: column; gap: 8px; }
 .ctrl-label { font-size: 12px; font-weight: 500; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
 .ctrl-row { display: flex; align-items: center; gap: 10px; }
-.ctrl-row input[type=range] {
-  flex: 1; -webkit-appearance: none; height: 4px;
-  background: var(--border); border-radius: 2px; outline: none;
-}
-.ctrl-row input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 16px; height: 16px;
-  background: var(--green); border-radius: 50%; cursor: pointer;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
+.ctrl-row input[type=range] { flex: 1; -webkit-appearance: none; height: 4px; background: var(--border); border-radius: 2px; outline: none; }
+.ctrl-row input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: var(--green); border-radius: 50%; cursor: pointer; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
 .ctrl-val { font-family: var(--mono); font-size: 14px; font-weight: 500; color: var(--text); min-width: 48px; text-align: right; }
 
 /* STATS */
@@ -87,7 +96,6 @@ header { background: var(--surface); border-bottom: 1px solid var(--border); pad
 .tab { font-size: 12px; font-weight: 500; padding: 5px 12px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); color: var(--muted); cursor: pointer; transition: all 0.15s; }
 .tab:hover { border-color: var(--green); color: var(--green); }
 .tab.active { background: var(--green); color: #fff; border-color: var(--green); }
-
 .btn-export { display: flex; align-items: center; gap: 6px; background: var(--green); color: #fff; border: none; border-radius: 8px; padding: 8px 16px; font-size: 13px; font-weight: 500; cursor: pointer; font-family: var(--sans); transition: background 0.15s; white-space: nowrap; }
 .btn-export:hover { background: var(--green-mid); }
 .btn-export svg { width: 15px; height: 15px; }
@@ -115,23 +123,113 @@ td:first-child { text-align: left; }
 .pill-g { background: var(--green-light); color: var(--green-mid); }
 .pill-r { background: var(--red-light); color: var(--red); }
 
-/* FOOTER NOTE */
+/* FOOTNOTE */
 .footnote { margin-top: 20px; font-size: 11px; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; }
 .footnote span { display: flex; align-items: center; gap: 4px; }
 .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
 
+/* ═══════════════════════════════════════
+   QUICK CALC PANEL
+═══════════════════════════════════════ */
+.qc-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+
+/* Left: inputs */
+.qc-inputs { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; }
+.qc-inputs-header { background: var(--ink); padding: 24px 28px 20px; }
+.qc-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--lime); color: white; font-size: 10px; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; padding: 3px 10px; border-radius: 2px; margin-bottom: 12px; }
+.qc-badge-dot { width: 5px; height: 5px; background: white; border-radius: 50%; }
+.qc-title { font-family: var(--serif); font-weight: 600; font-size: 26px; color: white; line-height: 1.2; letter-spacing: -0.01em; }
+.qc-title em { font-style: italic; color: var(--lime-light); font-weight: 600; }
+.qc-subtitle { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+.qc-body { padding: 24px 28px; }
+
+.qc-section-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; font-weight: 500; }
+.sku-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 7px; margin-bottom: 24px; }
+.sku-btn { border: 1px solid var(--border); background: white; border-radius: 6px; padding: 9px 10px; cursor: pointer; text-align: left; transition: all 0.12s; }
+.sku-btn:hover { border-color: var(--lime); }
+.sku-btn.active { border-color: var(--lime); background: #f0f9f0; }
+.sku-btn .sb-name { font-size: 11px; font-weight: 500; color: var(--text); display: block; margin-bottom: 1px; line-height: 1.3; }
+.sku-btn .sb-code { font-size: 10px; color: var(--muted); font-family: var(--mono); }
+.sku-btn.active .sb-name { color: var(--lime-dark); }
+
+.qc-slider { margin-bottom: 20px; }
+.qc-slider-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; }
+.qc-slider-label { font-size: 12px; color: var(--muted); }
+.qc-slider-val { font-family: var(--mono); font-size: 15px; color: var(--text); }
+.qc-slider-val small { font-size: 10px; color: var(--muted); margin-left: 2px; }
+.qc-slider input[type=range] { -webkit-appearance: none; width: 100%; height: 3px; background: var(--border); border-radius: 2px; outline: none; }
+.qc-slider input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 17px; height: 17px; border-radius: 50%; background: var(--ink); cursor: pointer; border: 3px solid white; box-shadow: 0 0 0 2px var(--ink); transition: background 0.12s, box-shadow 0.12s; }
+.qc-slider input[type=range]:hover::-webkit-slider-thumb { background: var(--lime); box-shadow: 0 0 0 2px var(--lime); }
+
+.qc-divider { height: 1px; background: var(--border); margin: 4px 0 20px; }
+
+/* Right: results */
+.qc-results { display: flex; flex-direction: column; gap: 16px; }
+
+.qc-hero { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 24px 28px; }
+.qc-hero-top { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 16px; }
+.qc-margin-big { font-family: var(--serif); font-size: 80px; font-weight: 600; line-height: 1; color: var(--lime-dark); transition: color 0.25s; letter-spacing: -0.02em; }
+.qc-margin-big.ok { color: #c9a84c; }
+.qc-margin-big.low { color: var(--red); }
+.qc-hero-info { padding-bottom: 8px; }
+.qc-verdict { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; display: flex; align-items: center; gap: 8px; }
+.verdict-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; display: inline-block; }
+.verdict-dot.good { background: var(--lime); box-shadow: 0 0 0 2px rgba(67,160,71,0.18); }
+.verdict-dot.ok   { background: #d4a93a; box-shadow: 0 0 0 2px rgba(212,169,58,0.18); }
+.verdict-dot.bad  { background: var(--red); box-shadow: 0 0 0 2px rgba(163,45,45,0.18); }
+.qc-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+.qc-stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+.qc-stat { background: var(--surface); padding: 12px 14px; text-align: center; }
+.qc-stat-val { font-family: var(--mono); font-size: 14px; color: var(--text); display: block; margin-bottom: 3px; font-weight: 500; }
+.qc-stat-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+/* Breakdown card */
+.qc-breakdown { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; }
+.qc-breakdown-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; font-weight: 500; }
+.breakdown-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 12px; }
+.breakdown-row:last-child { border-bottom: none; }
+.br-label { color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.br-badge { width: 8px; height: 8px; border-radius: 2px; flex-shrink: 0; }
+.br-val { font-family: var(--mono); font-size: 12px; color: var(--text); font-weight: 500; }
+.br-val.highlight { color: var(--lime-dark); font-size: 14px; }
+.br-val.red { color: var(--red); }
+
+/* Compare */
+.qc-compare { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; }
+.compare-row { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.compare-row:last-child { margin-bottom: 0; }
+.cmp-name { font-size: 11px; color: var(--muted); width: 92px; flex-shrink: 0; font-weight: 500; }
+.cmp-name.lime { color: var(--lime-dark); }
+.cmp-bar-wrap { flex: 1; height: 7px; background: var(--border); border-radius: 4px; overflow: hidden; }
+.cmp-bar { height: 100%; border-radius: 4px; transition: width 0.35s cubic-bezier(0.4,0,0.2,1); }
+.bar-lime { background: var(--lime); }
+.bar-rival { background: #c8c8be; }
+.cmp-pct { font-family: var(--mono); font-size: 11px; width: 50px; text-align: right; }
+.cmp-pct.lime { color: var(--lime-dark); font-weight: 500; }
+
+.qc-note { font-size: 11px; color: var(--muted); line-height: 1.6; display: flex; gap: 7px; align-items: flex-start; border-top: 1px solid var(--border); padding-top: 12px; margin-top: 12px; }
+
 /* PRINT */
 @media print {
-  header, .controls-wrap, .toolbar .btn-export, .cat-tabs { display: none !important; }
+  header, .controls-wrap, .toolbar .btn-export, .cat-tabs, .page-tabs { display: none !important; }
   body { background: #fff; }
   .table-wrap { border: none; box-shadow: none; }
 }
 
+@media (max-width: 900px) {
+  .qc-layout { grid-template-columns: 1fr; }
+}
 @media (max-width: 700px) {
   .controls-grid { grid-template-columns: 1fr; }
   .stats { grid-template-columns: repeat(2, 1fr); }
   header { padding: 0 16px; }
   .page { padding: 20px 16px 48px; }
+  .page-tabs { padding: 0 16px; overflow-x: auto; }
+  .page-tab { white-space: nowrap; }
+  .qc-margin-big { font-size: 60px; }
+  .qc-stats-row { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -148,7 +246,149 @@ td:first-child { text-align: left; }
   </div>
 </header>
 
-<div class="page">
+<div class="page-tabs">
+  <button class="page-tab active" onclick="switchPanel('quick', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+    Швидкий розрахунок
+  </button>
+  <button class="page-tab" onclick="switchPanel('full', this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+    Повна таблиця + Excel
+  </button>
+</div>
+
+<!-- ═══ QUICK CALC PANEL ═══ -->
+<div class="page panel active" id="panel-quick">
+
+  <div class="intro">
+    <h1>Швидкий розрахунок маржі</h1>
+    <p>Оберіть SKU, введіть вашу роздрібну ціну — маржа розраховується за повною формулою (EXW → мито → ПДВ → собівартість).</p>
+  </div>
+
+  <div class="qc-layout">
+
+    <!-- LEFT: INPUTS -->
+    <div class="qc-inputs">
+      <div class="qc-inputs-header">
+        <div class="qc-badge"><div class="qc-badge-dot"></div>LIME · Pointrade Ltd</div>
+        <div class="qc-title">Калькулятор <em>маржі</em> партнера</div>
+        <div class="qc-subtitle">Формула враховує мито, ПДВ та логістику</div>
+      </div>
+      <div class="qc-body">
+        <div class="qc-section-label">Оберіть SKU</div>
+        <div class="sku-grid" id="skuGrid"></div>
+
+        <div class="qc-section-label">Параметри ринку</div>
+
+        <div class="qc-slider">
+          <div class="qc-slider-row">
+            <span class="qc-slider-label">Ваша роздрібна ціна</span>
+            <span class="qc-slider-val" id="qRetailDisplay">150 <small>грн</small></span>
+          </div>
+          <input type="range" id="qRetail" min="50" max="800" value="150" step="5">
+        </div>
+
+        <div class="qc-slider">
+          <div class="qc-slider-row">
+            <span class="qc-slider-label">Курс USD/грн</span>
+            <span class="qc-slider-val" id="qRateDisplay">41.5 <small>грн/$</small></span>
+          </div>
+          <input type="range" id="qRate" min="38" max="46" value="41.5" step="0.5">
+        </div>
+
+        <div class="qc-slider">
+          <div class="qc-slider-row">
+            <span class="qc-slider-label">Логістика від EXW</span>
+            <span class="qc-slider-val" id="qLogDisplay">15 <small>%</small></span>
+          </div>
+          <input type="range" id="qLog" min="10" max="25" value="15" step="1">
+        </div>
+
+        <div class="qc-divider"></div>
+        <div style="font-size:11px; color:var(--muted); line-height:1.6;">
+          Мито: швабри та аксесуари <strong>5%</strong> · вологі серветки <strong>6.5%</strong><br>
+          ПДВ <strong>20%</strong> від (CIF + мито)
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: RESULTS -->
+    <div class="qc-results">
+
+      <!-- Hero margin -->
+      <div class="qc-hero">
+        <div class="qc-section-label">Маржа партнера</div>
+        <div class="qc-hero-top">
+          <div class="qc-margin-big" id="qMarginBig">—</div>
+          <div class="qc-hero-info">
+            <div class="qc-verdict" id="qVerdict"><span class="verdict-dot good"></span>—</div>
+            <div class="qc-sub" id="qSub">—</div>
+          </div>
+        </div>
+        <div class="qc-stats-row">
+          <div class="qc-stat"><span class="qc-stat-val" id="qStatCost">—</span><span class="qc-stat-lbl">Собів. UA</span></div>
+          <div class="qc-stat"><span class="qc-stat-val" id="qStatProfit">—</span><span class="qc-stat-lbl">Прибуток/шт</span></div>
+          <div class="qc-stat"><span class="qc-stat-val" id="qStatPerPalette">—</span><span class="qc-stat-lbl">з 1000 шт (палета)</span></div>
+        </div>
+      </div>
+
+      <!-- Breakdown -->
+      <div class="qc-breakdown">
+        <div class="qc-breakdown-title">Розбивка собівартості</div>
+        <div class="breakdown-row">
+          <span class="br-label"><span class="br-badge" style="background:#d4e8c8"></span>EXW ₴</span>
+          <span class="br-val" id="bEXW">—</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="br-label"><span class="br-badge" style="background:var(--blue-light)"></span>Логістика ₴</span>
+          <span class="br-val" id="bLog">—</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="br-label"><span class="br-badge" style="background:var(--amber-light)"></span>Мито ₴</span>
+          <span class="br-val" id="bDuty">—</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="br-label"><span class="br-badge" style="background:#FFF3E0"></span>ПДВ ₴</span>
+          <span class="br-val" id="bVat">—</span>
+        </div>
+        <div class="breakdown-row" style="border-top: 2px solid var(--border); margin-top: 4px; padding-top:8px;">
+          <span class="br-label" style="font-weight:600; color:var(--text)">Собівартість UA</span>
+          <span class="br-val" id="bCost">—</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="br-label" style="font-weight:600; color:var(--lime-dark)">Роздрібна ціна</span>
+          <span class="br-val highlight" id="bRetail">—</span>
+        </div>
+        <div class="breakdown-row">
+          <span class="br-label" style="font-weight:600; color:var(--text)">Прибуток партнера</span>
+          <span class="br-val" id="bProfit">—</span>
+        </div>
+      </div>
+
+      <!-- Compare -->
+      <div class="qc-compare">
+        <div class="qc-breakdown-title">Маржа LIME vs дешевий аналог</div>
+        <div class="compare-row">
+          <span class="cmp-name lime">LIME</span>
+          <div class="cmp-bar-wrap"><div class="cmp-bar bar-lime" id="barLime" style="width:60%"></div></div>
+          <span class="cmp-pct lime" id="cmpLime">—</span>
+        </div>
+        <div class="compare-row">
+          <span class="cmp-name">Дешевий аналог</span>
+          <div class="cmp-bar-wrap"><div class="cmp-bar bar-rival" style="width:25%"></div></div>
+          <span class="cmp-pct">15–25%</span>
+        </div>
+        <div class="qc-note">
+          Рекламації LIME &lt;1% проти 12–18% у дешевих аналогів. Кожне повернення з'їдає вашу маржу — з LIME ви отримуєте те, що порахували.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FULL TABLE PANEL ═══ -->
+<div class="page panel" id="panel-full">
 
   <div class="intro">
     <h1>Розрахунок собівартості та роздрібної ціни</h1>
@@ -239,38 +479,38 @@ td:first-child { text-align: left; }
 </div>
 
 <script>
+// ═══════════════════════════════════════
+// SHARED DATA
+// ═══════════════════════════════════════
 const CATS_ORDER = ["Spinning Mop","Flat Mop","Spray Mop","Window","Wet Wipes","Запчастини"];
 
 const SKUS = [
-  {code:"PS-0002", name:"Wow Clean&Dirty + педаль",        cat:"Spinning Mop", usd:11.55,  duty:0.05},
-  {code:"PS-0001", name:"Pedal Power Spinning Mop 18L",    cat:"Spinning Mop", usd:7.98,   duty:0.05},
-  {code:"OS-0001", name:"Dark Power Spinning Mop 18L",     cat:"Spinning Mop", usd:5.78,   duty:0.05},
-  {code:"OS-0002", name:"Shadow Spinning Mop 14L",         cat:"Spinning Mop", usd:4.68,   duty:0.05},
-  {code:"TS-0002", name:"Trio Power Flat Mop",             cat:"Flat Mop",     usd:8.20,   duty:0.05},
-  {code:"TS-0001", name:"Pro Flat Mop",                    cat:"Flat Mop",     usd:5.45,   duty:0.05},
-  {code:"CM-0001", name:"Easy Click Hands Free Mop",       cat:"Flat Mop",     usd:4.35,   duty:0.05},
-  {code:"MM-0001", name:"X-Power Flat Mop телескоп",       cat:"Flat Mop",     usd:3.30,   duty:0.05},
-  {code:"MM-0002", name:"X-Power Flat Mop 4-секц.",        cat:"Flat Mop",     usd:3.30,   duty:0.05},
-  {code:"SM-0003", name:"Projet Double Side Spray Mop",    cat:"Spray Mop",    usd:6.11,   duty:0.05},
-  {code:"SM-0001", name:"Projet Spray Mop",                cat:"Spray Mop",    usd:5.45,   duty:0.05},
-  {code:"SM-0002", name:"Projet Spray Mop color box",      cat:"Spray Mop",    usd:5.45,   duty:0.05},
-  {code:"SC-0001", name:"Spray Window Wiper + мікрофібра", cat:"Window",       usd:2.04,   duty:0.05},
-  {code:"WW-0001", name:"Multisurface Wet Wipes 100 шт",   cat:"Wet Wipes",    usd:1.18,   duty:0.065},
-  {code:"WW-0002", name:"Floor Cleaning Mop Towel 50 шт",  cat:"Wet Wipes",    usd:1.44,   duty:0.065},
-  {code:"WW-0003", name:"Classic Lavender 100 шт",         cat:"Wet Wipes",    usd:0.89,   duty:0.065},
-  {code:"WW-0004", name:"Degreasing Surface Towel 100 шт", cat:"Wet Wipes",    usd:1.22,   duty:0.065},
-  {code:"HS-0001", name:"3-in-1 Handle Set",               cat:"Запчастини",   usd:2.37,   duty:0.05},
-  {code:"YP-0003", name:"Spinning Mop Refill мікрофібра",  cat:"Запчастини",   usd:0.52,   duty:0.05},
-  {code:"YP-0006", name:"LIME Spinning Mop Refill 24/уп",  cat:"Запчастини",   usd:0.72,   duty:0.05},
+  {code:"PS-0002", name:"Wow Clean&Dirty + педаль",        cat:"Spinning Mop", usd:11.55, duty:0.05},
+  {code:"PS-0001", name:"Pedal Power Spinning Mop 18L",    cat:"Spinning Mop", usd:7.98,  duty:0.05},
+  {code:"OS-0001", name:"Dark Power Spinning Mop 18L",     cat:"Spinning Mop", usd:5.78,  duty:0.05},
+  {code:"OS-0002", name:"Shadow Spinning Mop 14L",         cat:"Spinning Mop", usd:4.68,  duty:0.05},
+  {code:"TS-0002", name:"Trio Power Flat Mop",             cat:"Flat Mop",     usd:8.20,  duty:0.05},
+  {code:"TS-0001", name:"Pro Flat Mop",                    cat:"Flat Mop",     usd:5.45,  duty:0.05},
+  {code:"CM-0001", name:"Easy Click Hands Free Mop",       cat:"Flat Mop",     usd:4.35,  duty:0.05},
+  {code:"MM-0001", name:"X-Power Flat Mop телескоп",       cat:"Flat Mop",     usd:3.30,  duty:0.05},
+  {code:"MM-0002", name:"X-Power Flat Mop 4-секц.",        cat:"Flat Mop",     usd:3.30,  duty:0.05},
+  {code:"SM-0003", name:"Projet Double Side Spray Mop",    cat:"Spray Mop",    usd:6.11,  duty:0.05},
+  {code:"SM-0001", name:"Projet Spray Mop",                cat:"Spray Mop",    usd:5.45,  duty:0.05},
+  {code:"SM-0002", name:"Projet Spray Mop color box",      cat:"Spray Mop",    usd:5.45,  duty:0.05},
+  {code:"SC-0001", name:"Spray Window Wiper + мікрофібра", cat:"Window",       usd:2.04,  duty:0.05},
+  {code:"WW-0001", name:"Multisurface Wet Wipes 100 шт",   cat:"Wet Wipes",    usd:1.18,  duty:0.065},
+  {code:"WW-0002", name:"Floor Cleaning Mop Towel 50 шт",  cat:"Wet Wipes",    usd:1.44,  duty:0.065},
+  {code:"WW-0003", name:"Classic Lavender 100 шт",         cat:"Wet Wipes",    usd:0.89,  duty:0.065},
+  {code:"WW-0004", name:"Degreasing Surface Towel 100 шт", cat:"Wet Wipes",    usd:1.22,  duty:0.065},
+  {code:"HS-0001", name:"3-in-1 Handle Set",               cat:"Запчастини",   usd:2.37,  duty:0.05},
+  {code:"YP-0003", name:"Spinning Mop Refill мікрофібра",  cat:"Запчастини",   usd:0.52,  duty:0.05},
+  {code:"YP-0006", name:"LIME Spinning Mop Refill 24/уп",  cat:"Запчастини",   usd:0.72,  duty:0.05},
 ];
 
 const ALL_CATS = ["Всі", ...CATS_ORDER];
-let activeCat = "Всі";
 
-function r2(n) { return Math.round(n * 100) / 100; }
-function fmt(n) { return Math.round(n).toLocaleString('uk-UA'); }
-
-function calc(s, rate, logPct) {
+// Shared calc function (honest formula)
+function calcSku(s, rate, logPct) {
   const exw  = s.usd * rate;
   const log  = exw * (logPct / 100);
   const cif  = exw + log;
@@ -279,6 +519,112 @@ function calc(s, rate, logPct) {
   const cost = cif + duty + vat;
   return {exw, log, cif, duty, vat, cost};
 }
+
+function r2(n) { return Math.round(n * 100) / 100; }
+function fmt(n) { return Math.round(n).toLocaleString('uk-UA'); }
+
+// ═══════════════════════════════════════
+// PAGE TABS
+// ═══════════════════════════════════════
+function switchPanel(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// QUICK CALC
+// ═══════════════════════════════════════
+const QUICK_SKUS = SKUS.filter(s =>
+  ['PS-0001','OS-0001','CM-0001','MM-0001','SM-0001','SC-0001','WW-0001','WW-0002','WW-0003'].includes(s.code)
+);
+
+let qSku = QUICK_SKUS[2]; // Easy Click default
+
+const skuGrid = document.getElementById('skuGrid');
+QUICK_SKUS.forEach(s => {
+  const btn = document.createElement('div');
+  btn.className = 'sku-btn' + (s.code === qSku.code ? ' active' : '');
+  btn.innerHTML = `<span class="sb-name">${s.name}</span><span class="sb-code">${s.code} · $${s.usd}</span>`;
+  btn.onclick = () => {
+    document.querySelectorAll('.sku-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    qSku = s;
+    qCalc();
+  };
+  skuGrid.appendChild(btn);
+});
+
+const qRetailSlider = document.getElementById('qRetail');
+const qRateSlider   = document.getElementById('qRate');
+const qLogSlider    = document.getElementById('qLog');
+
+function qCalc() {
+  const retail = +qRetailSlider.value;
+  const rate   = +qRateSlider.value;
+  const logPct = +qLogSlider.value;
+
+  document.getElementById('qRetailDisplay').innerHTML = `${retail} <small>грн</small>`;
+  document.getElementById('qRateDisplay').innerHTML   = `${rate} <small>грн/$</small>`;
+  document.getElementById('qLogDisplay').innerHTML    = `${logPct} <small>%</small>`;
+
+  const c = calcSku(qSku, rate, logPct);
+  const profit = retail - c.cost;
+  const margin = (profit / retail) * 100;
+
+  document.getElementById('qStatCost').textContent      = fmt(c.cost)      + ' ₴';
+  document.getElementById('qStatProfit').textContent    = fmt(profit)      + ' ₴';
+  document.getElementById('qStatPerPalette').textContent = fmt(profit * 1000) + ' ₴';
+
+  // Breakdown
+  document.getElementById('bEXW').textContent    = fmt(c.exw)  + ' ₴';
+  document.getElementById('bLog').textContent    = fmt(c.log)  + ' ₴';
+  document.getElementById('bDuty').textContent   = fmt(c.duty) + ' ₴';
+  document.getElementById('bVat').textContent    = fmt(c.vat)  + ' ₴';
+  document.getElementById('bCost').textContent   = fmt(c.cost) + ' ₴';
+  document.getElementById('bRetail').textContent = fmt(retail) + ' ₴';
+  document.getElementById('bProfit').textContent = fmt(profit) + ' ₴';
+
+  // Hero
+  const mb = document.getElementById('qMarginBig');
+  const mv = document.getElementById('qVerdict');
+  const ms = document.getElementById('qSub');
+  mb.textContent = Math.round(margin) + '%';
+
+  if (margin >= 40) {
+    mb.className = 'qc-margin-big';
+    mv.innerHTML = '<span class="verdict-dot good"></span>Відмінна маржа';
+    ms.textContent = 'Ціль LIME — 30–50%. Ви у зеленій зоні.';
+  } else if (margin >= 25) {
+    mb.className = 'qc-margin-big ok';
+    mv.innerHTML = '<span class="verdict-dot ok"></span>Добра маржа';
+    ms.textContent = 'Можна підняти ціну або зменшити знижки.';
+  } else if (margin >= 0) {
+    mb.className = 'qc-margin-big low';
+    mv.innerHTML = '<span class="verdict-dot bad"></span>Низька маржа';
+    ms.textContent = 'Спробуйте підняти роздрібну ціну або обрати інший SKU.';
+  } else {
+    mb.className = 'qc-margin-big low';
+    mv.innerHTML = '<span class="verdict-dot bad"></span>Збиток';
+    ms.textContent = 'Роздрібна ціна нижча за собівартість.';
+  }
+
+  // Compare bar
+  const limeW = Math.min(Math.max(margin, 0), 80);
+  document.getElementById('barLime').style.width = (limeW / 80 * 100) + '%';
+  document.getElementById('cmpLime').textContent = Math.round(margin) + '%';
+}
+
+qRetailSlider.oninput = qCalc;
+qRateSlider.oninput   = qCalc;
+qLogSlider.oninput    = qCalc;
+qCalc();
+
+// ═══════════════════════════════════════
+// FULL TABLE
+// ═══════════════════════════════════════
+let activeCat = "Всі";
 
 function getParams() {
   return {
@@ -295,8 +641,8 @@ function render() {
   document.getElementById('logVal').textContent     = logPct + '%';
 
   const list = activeCat === "Всі" ? SKUS : SKUS.filter(s => s.cat === activeCat);
-  const rows = list.map(s => { const c = calc(s, rate, logPct); return {...c, retail: c.cost / (1 - margin/100), markup: 0, s}; });
-  rows.forEach(r => { r.markup = ((r.retail / r.s.usd / rate) - 1) * 100; });
+  const rows = list.map(s => { const c = calcSku(s, rate, logPct); return {...c, retail: c.cost / (1 - margin/100), markup: 0, s}; });
+  rows.forEach(r => { r.markup = ((r.retail / (r.s.usd * rate)) - 1) * 100; });
 
   const costs   = rows.map(r => r.cost);
   const retails = rows.map(r => r.retail);
@@ -317,7 +663,7 @@ function render() {
   groups.forEach(g => {
     if (activeCat === "Всі") html += `<tr class="sep-row"><td colspan="10">${g.cat}</td></tr>`;
     g.items.forEach(s => {
-      const c = calc(s, rate, logPct);
+      const c = calcSku(s, rate, logPct);
       const retail = c.cost / (1 - margin/100);
       const markup = ((retail / (s.usd * rate)) - 1) * 100;
       const dutyLabel = s.duty === 0.065 ? '6.5%' : '5%';
@@ -341,56 +687,34 @@ function render() {
 function exportExcel() {
   const {rate, margin, logPct} = getParams();
   const wb = XLSX.utils.book_new();
-
-  const header = [
-    'Код', 'Категорія', 'Назва товару', 'Мито %',
-    'EXW $', 'EXW ₴', 'Логістика ₴', 'CIF ₴',
-    'Мито ₴', 'ПДВ ₴', 'Собів. UA ₴', 'Роздріб ₴', 'Нац. %'
-  ];
-
+  const header = ['Код','Категорія','Назва товару','Мито %','EXW $','EXW ₴','Логістика ₴','CIF ₴','Мито ₴','ПДВ ₴','Собів. UA ₴','Роздріб ₴','Нац. %'];
   const params = [
-    [`Параметри розрахунку`, '', '', '', '', '', '', '', '', '', '', '', ''],
-    [`Курс $/грн:`, rate.toFixed(1), '', '', '', '', '', '', '', '', '', '', ''],
-    [`Маржа мережі:`, margin + '%', '', '', '', '', '', '', '', '', '', '', ''],
-    [`Логістика від EXW:`, logPct + '%', '', '', '', '', '', '', '', '', '', '', ''],
-    [`Мито: швабри 5%, серветки 6.5%`, '', '', '', '', '', '', '', '', '', '', '', ''],
-    [`ПДВ: 20% від (CIF + мито)`, '', '', '', '', '', '', '', '', '', '', '', ''],
+    [`Параметри розрахунку`,'','','','','','','','','','','',''],
+    [`Курс $/грн:`, rate.toFixed(1),'','','','','','','','','','',''],
+    [`Маржа мережі:`, margin+'%','','','','','','','','','','',''],
+    [`Логістика від EXW:`, logPct+'%','','','','','','','','','','',''],
+    [`Мито: швабри 5%, серветки 6.5%`,'','','','','','','','','','','',''],
+    [`ПДВ: 20% від (CIF + мито)`,'','','','','','','','','','','',''],
     [],
     header
   ];
-
   SKUS.forEach(s => {
-    const c = calc(s, rate, logPct);
+    const c = calcSku(s, rate, logPct);
     const retail = c.cost / (1 - margin/100);
     const markup = ((retail / (s.usd * rate)) - 1) * 100;
-    params.push([
-      s.code, s.cat, s.name,
-      s.duty === 0.065 ? '6.5%' : '5%',
-      s.usd,
-      Math.round(c.exw),
-      Math.round(c.log),
-      Math.round(c.cif),
-      Math.round(c.duty),
-      Math.round(c.vat),
-      Math.round(c.cost),
-      Math.round(retail),
-      Math.round(markup) + '%'
-    ]);
+    params.push([s.code, s.cat, s.name, s.duty===0.065?'6.5%':'5%', s.usd,
+      Math.round(c.exw), Math.round(c.log), Math.round(c.cif),
+      Math.round(c.duty), Math.round(c.vat), Math.round(c.cost),
+      Math.round(retail), Math.round(markup)+'%']);
   });
-
   const ws = XLSX.utils.aoa_to_sheet(params);
-  ws['!cols'] = [
-    {wch:10},{wch:14},{wch:36},{wch:8},
-    {wch:8},{wch:9},{wch:12},{wch:9},
-    {wch:9},{wch:9},{wch:12},{wch:11},{wch:8}
-  ];
-
+  ws['!cols'] = [{wch:10},{wch:14},{wch:36},{wch:8},{wch:8},{wch:9},{wch:12},{wch:9},{wch:9},{wch:9},{wch:12},{wch:11},{wch:8}];
   XLSX.utils.book_append_sheet(wb, ws, 'LIME Ціни');
   const date = new Date().toISOString().slice(0,10);
   XLSX.writeFile(wb, `LIME_price_${date}_USD${rate.toFixed(1)}_margin${margin}.xlsx`);
 }
 
-// Build tabs
+// Build full-table tabs
 const tabsEl = document.getElementById('tabs');
 ALL_CATS.forEach(c => {
   const b = document.createElement('button');
@@ -405,8 +729,8 @@ ALL_CATS.forEach(c => {
   tabsEl.appendChild(b);
 });
 
-document.getElementById('rate').oninput = render;
-document.getElementById('margin').oninput = render;
+document.getElementById('rate').oninput     = render;
+document.getElementById('margin').oninput   = render;
 document.getElementById('logistic').oninput = render;
 render();
 </script>
