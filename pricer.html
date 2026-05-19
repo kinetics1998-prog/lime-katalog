@@ -462,7 +462,8 @@ td:first-child { text-align: left; }
           <th>ПДВ ₴</th>
           <th>Собів. UA ₴</th>
           <th>Роздріб ₴</th>
-          <th>Нац. %</th>
+          <th>Прибуток ₴</th>
+          <th>Наценка %</th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
@@ -470,10 +471,10 @@ td:first-child { text-align: left; }
   </div>
 
   <div class="footnote">
-    <span><span class="dot" style="background:var(--green-mid)"></span> Нац. ≥80% — нормальна маржинальність</span>
-    <span><span class="dot" style="background:var(--red)"></span> Нац. &lt;80% — перевірте умови</span>
-    <span>Мито: швабри та аксесуари 5% · вологі серветки 6.5%</span>
-    <span>ПДВ 20% від (CIF + мито)</span>
+    <span>Прибуток ₴ = Роздріб − Собів.</span>
+    <span>Наценка % = (Роздріб − Собів.) / Собів. × 100</span>
+    <span>Маржа партнера = Прибуток / Роздріб (= % зі слайдера)</span>
+    <span>Мито: швабри 5% · серветки 6.5% · ПДВ 20% від (CIF + мито)</span>
   </div>
 
 </div>
@@ -641,18 +642,23 @@ function render() {
   document.getElementById('logVal').textContent     = logPct + '%';
 
   const list = activeCat === "Всі" ? SKUS : SKUS.filter(s => s.cat === activeCat);
-  const rows = list.map(s => { const c = calcSku(s, rate, logPct); return {...c, retail: c.cost / (1 - margin/100), markup: 0, s}; });
-  rows.forEach(r => { r.markup = ((r.retail / (r.s.usd * rate)) - 1) * 100; });
+  const rows = list.map(s => {
+    const c = calcSku(s, rate, logPct);
+    const retail = c.cost / (1 - margin/100);
+    const profit = retail - c.cost;
+    return {...c, retail, profit, s};
+  });
 
   const costs   = rows.map(r => r.cost);
   const retails = rows.map(r => r.retail);
-  const avgMark = Math.round(rows.reduce((a,r) => a + r.markup, 0) / rows.length);
+  const profits = rows.map(r => r.profit);
+  const totalProfit1000 = Math.round(profits.reduce((a,p) => a + p, 0) * 1000);
 
   document.getElementById('stats').innerHTML = `
     <div class="stat"><div class="stat-label">SKU</div><div class="stat-value">${list.length}</div></div>
     <div class="stat"><div class="stat-label">Собів. UA мін–макс</div><div class="stat-value" style="font-size:14px">${fmt(Math.min(...costs))} – ${fmt(Math.max(...costs))} ₴</div></div>
     <div class="stat"><div class="stat-label">Роздріб мін–макс</div><div class="stat-value" style="font-size:14px">${fmt(Math.min(...retails))} – ${fmt(Math.max(...retails))} ₴</div></div>
-    <div class="stat"><div class="stat-label">Середнє нац. EXW→роздріб</div><div class="stat-value green">${avgMark}%</div></div>
+    <div class="stat"><div class="stat-label">Прибуток мін–макс</div><div class="stat-value green" style="font-size:14px">${fmt(Math.min(...profits))} – ${fmt(Math.max(...profits))} ₴</div></div>
   `;
 
   const groups = activeCat === "Всі"
@@ -665,7 +671,8 @@ function render() {
     g.items.forEach(s => {
       const c = calcSku(s, rate, logPct);
       const retail = c.cost / (1 - margin/100);
-      const markup = ((retail / (s.usd * rate)) - 1) * 100;
+      const profit = retail - c.cost;
+      const markup = (profit / c.cost) * 100;
       const dutyLabel = s.duty === 0.065 ? '6.5%' : '5%';
       html += `<tr>
         <td><div class="sku-name">${s.name}</div><div class="sku-code">${s.code} · мито ${dutyLabel}</div></td>
@@ -677,7 +684,8 @@ function render() {
         <td class="c-vat">${fmt(c.vat)}</td>
         <td class="c-cost">${fmt(c.cost)}</td>
         <td class="c-ret">${fmt(retail)}</td>
-        <td><span class="pill ${markup >= 80 ? 'pill-g' : 'pill-r'}">${Math.round(markup)}%</span></td>
+        <td class="c-cost">${fmt(profit)}</td>
+        <td><span class="pill ${markup >= 40 ? 'pill-g' : 'pill-r'}">${Math.round(markup)}%</span></td>
       </tr>`;
     });
   });
@@ -687,7 +695,7 @@ function render() {
 function exportExcel() {
   const {rate, margin, logPct} = getParams();
   const wb = XLSX.utils.book_new();
-  const header = ['Код','Категорія','Назва товару','Мито %','EXW $','EXW ₴','Логістика ₴','CIF ₴','Мито ₴','ПДВ ₴','Собів. UA ₴','Роздріб ₴','Нац. %'];
+  const header = ['Код','Категорія','Назва товару','Мито %','EXW $','EXW ₴','Логістика ₴','CIF ₴','Мито ₴','ПДВ ₴','Собів. UA ₴','Роздріб ₴','Прибуток ₴','Наценка %'];
   const params = [
     [`Параметри розрахунку`,'','','','','','','','','','','',''],
     [`Курс $/грн:`, rate.toFixed(1),'','','','','','','','','','',''],
@@ -701,14 +709,15 @@ function exportExcel() {
   SKUS.forEach(s => {
     const c = calcSku(s, rate, logPct);
     const retail = c.cost / (1 - margin/100);
-    const markup = ((retail / (s.usd * rate)) - 1) * 100;
+    const profit = retail - c.cost;
+    const markup = (profit / c.cost) * 100;
     params.push([s.code, s.cat, s.name, s.duty===0.065?'6.5%':'5%', s.usd,
       Math.round(c.exw), Math.round(c.log), Math.round(c.cif),
       Math.round(c.duty), Math.round(c.vat), Math.round(c.cost),
-      Math.round(retail), Math.round(markup)+'%']);
+      Math.round(retail), Math.round(profit), Math.round(markup)+'%']);
   });
   const ws = XLSX.utils.aoa_to_sheet(params);
-  ws['!cols'] = [{wch:10},{wch:14},{wch:36},{wch:8},{wch:8},{wch:9},{wch:12},{wch:9},{wch:9},{wch:9},{wch:12},{wch:11},{wch:8}];
+  ws['!cols'] = [{wch:10},{wch:14},{wch:36},{wch:8},{wch:8},{wch:9},{wch:12},{wch:9},{wch:9},{wch:9},{wch:12},{wch:11},{wch:11},{wch:10}];
   XLSX.utils.book_append_sheet(wb, ws, 'LIME Ціни');
   const date = new Date().toISOString().slice(0,10);
   XLSX.writeFile(wb, `LIME_price_${date}_USD${rate.toFixed(1)}_margin${margin}.xlsx`);
