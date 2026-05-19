@@ -298,14 +298,15 @@ td:first-child { text-align: left; }
 
         <div class="qc-slider">
           <div class="qc-slider-row">
-            <span class="qc-slider-label">Логістика від EXW</span>
-            <span class="qc-slider-val" id="qLogDisplay">15 <small>%</small></span>
+            <span class="qc-slider-label">Логістика ₴/шт</span>
+            <span class="qc-slider-val" id="qLogDisplay">15 <small>₴/шт</small></span>
           </div>
-          <input type="range" id="qLog" min="10" max="25" value="15" step="1">
+          <input type="range" id="qLog" min="5" max="40" value="15" step="1">
         </div>
 
         <div class="qc-divider"></div>
         <div style="font-size:11px; color:var(--muted); line-height:1.6;">
+          Логістика: <strong>фіксована ₴/шт</strong> (контейнерна модель, не залежить від ціни товару)<br>
           Мито: швабри та аксесуари <strong>5%</strong> · вологі серветки <strong>6.5%</strong><br>
           ПДВ <strong>20%</strong> від (CIF + мито)
         </div>
@@ -398,7 +399,7 @@ td:first-child { text-align: left; }
   <div class="formula">
     <div class="formula-step"><span class="f-badge f-exw">EXW $</span><span>× курс</span></div>
     <span class="f-arr">→</span>
-    <div class="formula-step"><span>+ логістика</span><span class="f-badge f-log">15%</span></div>
+    <div class="formula-step"><span>+ логістика</span><span class="f-badge f-log">₴/шт</span></div>
     <span class="f-arr">=</span>
     <div class="formula-step"><span class="f-badge f-log">CIF ₴</span></div>
     <span class="f-arr">→</span>
@@ -428,10 +429,10 @@ td:first-child { text-align: left; }
         </div>
       </div>
       <div class="ctrl-group">
-        <div class="ctrl-label">Логістика від EXW %</div>
+        <div class="ctrl-label">Логістика ₴/шт</div>
         <div class="ctrl-row">
-          <input type="range" min="10" max="25" step="1" value="15" id="logistic">
-          <span class="ctrl-val" id="logVal">15%</span>
+          <input type="range" min="5" max="40" step="1" value="15" id="logistic">
+          <span class="ctrl-val" id="logVal">15 ₴</span>
         </div>
       </div>
     </div>
@@ -477,6 +478,18 @@ td:first-child { text-align: left; }
     <span>Мито: швабри 5% · серветки 6.5% · ПДВ 20% від (CIF + мито)</span>
   </div>
 
+  <div style="margin-top:18px;padding:14px 18px;background:#FEF3E2;border:1px solid #f0d9a8;border-radius:8px;font-size:12px;color:#854F0B;line-height:1.65;">
+    <strong style="display:block;margin-bottom:4px;color:#5a3508;">⚠ Що не включено в розрахунок</strong>
+    Калькулятор показує <strong>landed cost LIME → роздрібна ціна</strong>. Реальна чиста маржа мережі може бути нижче на <strong>8–18%</strong> через:
+    <ul style="margin:6px 0 0 18px;padding:0;">
+      <li><strong>Listing fee</strong> — одноразова плата за введення нового SKU у матрицю мережі (10–50 тис ₴/позиція)</li>
+      <li><strong>Retro-бонус</strong> — 5–15% від річного обороту в кінці року</li>
+      <li><strong>Маркетинговий бюджет</strong> мережі — листівки, акції, торгові виставки</li>
+      <li><strong>Внутрішня логістика</strong> мережі — розподіл по магазинах, складська націнка</li>
+    </ul>
+    Точні умови — обговорюються індивідуально під формат вашої мережі.
+  </div>
+
 </div>
 
 <script>
@@ -511,9 +524,11 @@ const SKUS = [
 const ALL_CATS = ["Всі", ...CATS_ORDER];
 
 // Shared calc function (honest formula)
-function calcSku(s, rate, logPct) {
+// logUah — фіксована логістика ₴ на одну одиницю товару (contained shipping cost)
+// Це реалістичніше за % від EXW: контейнер коштує однаково для дешевих і дорогих SKU
+function calcSku(s, rate, logUah) {
   const exw  = s.usd * rate;
-  const log  = exw * (logPct / 100);
+  const log  = logUah;
   const cif  = exw + log;
   const duty = cif * s.duty;
   const vat  = (cif + duty) * 0.20;
@@ -564,13 +579,13 @@ const qLogSlider    = document.getElementById('qLog');
 function qCalc() {
   const retail = +qRetailSlider.value;
   const rate   = +qRateSlider.value;
-  const logPct = +qLogSlider.value;
+  const logUah = +qLogSlider.value;
 
   document.getElementById('qRetailDisplay').innerHTML = `${retail} <small>грн</small>`;
   document.getElementById('qRateDisplay').innerHTML   = `${rate} <small>грн/$</small>`;
-  document.getElementById('qLogDisplay').innerHTML    = `${logPct} <small>%</small>`;
+  document.getElementById('qLogDisplay').innerHTML    = `${logUah} <small>₴/шт</small>`;
 
-  const c = calcSku(qSku, rate, logPct);
+  const c = calcSku(qSku, rate, logUah);
   const profit = retail - c.cost;
   const margin = (profit / retail) * 100;
 
@@ -631,19 +646,19 @@ function getParams() {
   return {
     rate:   +document.getElementById('rate').value,
     margin: +document.getElementById('margin').value,
-    logPct: +document.getElementById('logistic').value,
+    logUah: +document.getElementById('logistic').value,
   };
 }
 
 function render() {
-  const {rate, margin, logPct} = getParams();
+  const {rate, margin, logUah} = getParams();
   document.getElementById('rateVal').textContent   = rate.toFixed(1) + ' ₴';
   document.getElementById('marginVal').textContent  = margin + '%';
-  document.getElementById('logVal').textContent     = logPct + '%';
+  document.getElementById('logVal').textContent     = logUah + ' ₴';
 
   const list = activeCat === "Всі" ? SKUS : SKUS.filter(s => s.cat === activeCat);
   const rows = list.map(s => {
-    const c = calcSku(s, rate, logPct);
+    const c = calcSku(s, rate, logUah);
     const retail = c.cost / (1 - margin/100);
     const profit = retail - c.cost;
     return {...c, retail, profit, s};
@@ -669,7 +684,7 @@ function render() {
   groups.forEach(g => {
     if (activeCat === "Всі") html += `<tr class="sep-row"><td colspan="10">${g.cat}</td></tr>`;
     g.items.forEach(s => {
-      const c = calcSku(s, rate, logPct);
+      const c = calcSku(s, rate, logUah);
       const retail = c.cost / (1 - margin/100);
       const profit = retail - c.cost;
       const markup = (profit / c.cost) * 100;
@@ -693,21 +708,21 @@ function render() {
 }
 
 function exportExcel() {
-  const {rate, margin, logPct} = getParams();
+  const {rate, margin, logUah} = getParams();
   const wb = XLSX.utils.book_new();
   const header = ['Код','Категорія','Назва товару','Мито %','EXW $','EXW ₴','Логістика ₴','CIF ₴','Мито ₴','ПДВ ₴','Собів. UA ₴','Роздріб ₴','Прибуток ₴','Наценка %'];
   const params = [
     [`Параметри розрахунку`,'','','','','','','','','','','',''],
     [`Курс $/грн:`, rate.toFixed(1),'','','','','','','','','','',''],
     [`Маржа мережі:`, margin+'%','','','','','','','','','','',''],
-    [`Логістика від EXW:`, logPct+'%','','','','','','','','','','',''],
+    [`Логістика ₴/шт:`, logUah+' ₴','','','','','','','','','','',''],
     [`Мито: швабри 5%, серветки 6.5%`,'','','','','','','','','','','',''],
     [`ПДВ: 20% від (CIF + мито)`,'','','','','','','','','','','',''],
     [],
     header
   ];
   SKUS.forEach(s => {
-    const c = calcSku(s, rate, logPct);
+    const c = calcSku(s, rate, logUah);
     const retail = c.cost / (1 - margin/100);
     const profit = retail - c.cost;
     const markup = (profit / c.cost) * 100;
