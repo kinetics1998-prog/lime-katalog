@@ -123,6 +123,13 @@ td:first-child { text-align: left; }
 .pill-g { background: var(--green-light); color: var(--green-mid); }
 .pill-r { background: var(--red-light); color: var(--red); }
 
+/* INFO TOOLTIP */
+.th-info { display:inline-flex; align-items:center; justify-content:center; width:14px; height:14px; border:1px solid var(--muted); border-radius:50%; font-family:var(--sans); font-size:9px; font-weight:600; font-style:normal; color:var(--muted); margin-left:5px; cursor:help; position:relative; vertical-align:middle; letter-spacing:0; text-transform:none; }
+.th-info:hover { border-color:var(--text); color:var(--text); }
+.th-info::before { content:attr(data-tip); position:absolute; bottom:calc(100% + 10px); right:-6px; background:var(--ink); color:#fff; font-family:var(--sans); font-size:11px; font-weight:400; letter-spacing:normal; text-transform:none; line-height:1.55; padding:10px 14px; border-radius:6px; white-space:normal; width:280px; text-align:left; opacity:0; pointer-events:none; transition:opacity .15s; box-shadow:0 4px 16px rgba(0,0,0,0.18); z-index:100; }
+.th-info::after { content:''; position:absolute; bottom:calc(100% + 4px); right:0; border:6px solid transparent; border-top-color:var(--ink); opacity:0; pointer-events:none; transition:opacity .15s; }
+.th-info:hover::before, .th-info:hover::after { opacity:1; }
+
 /* FOOTNOTE */
 .footnote { margin-top: 20px; font-size: 11px; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; }
 .footnote span { display: flex; align-items: center; gap: 4px; }
@@ -464,7 +471,7 @@ td:first-child { text-align: left; }
           <th>Собів. UA ₴</th>
           <th>Роздріб ₴</th>
           <th>Прибуток ₴</th>
-          <th>Наценка %</th>
+          <th>Наценка %<span class="th-info" data-tip="Наценка ≠ Маржа. Маржа 40% — частка прибутку в роздрібі. Наценка 67% — на скільки % роздріб дорожчий за собівартість. Це одне й те саме число, виміряне з різних боків.">i</span></th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
