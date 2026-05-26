@@ -369,7 +369,6 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
     <a href="#videos"><span class="ua">Відео</span><span class="en">Videos</span></a>
     <a href="#private-label">Private Label</a>
     <a href="#reviews"><span class="ua">Відгуки</span><span class="en">Reviews</span></a>
-    <a href="pricer.html"><span class="ua">Калькулятор</span><span class="en">Calculator</span></a>
     <a href="#request" class="cta"><span class="ua">Отримати КП</span><span class="en">Request quote</span></a>
   </nav>
   <div class="lang-sw">
@@ -788,10 +787,6 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
               <div><div class="bs-spec-l">EAN</div><div class="bs-spec-v">8684646050517</div></div>
               <div><div class="bs-spec-l">40' HC</div><div class="bs-spec-v">18 560 шт</div></div>
             </div>
-            <div class="bs-price">
-              <span class="p-price-l">Опт від</span>
-              <span class="p-price">$3.30 <small>/ шт</small></span>
-            </div>
             <div class="bs-actions">
               <a href="https://wa.me/380952855582?text=Доброго дня! Цікавить MM-0001 — X-Power Flat Mop. Можна прайс і умови?" target="_blank" class="bs-btn">WhatsApp</a>
               <a href="mailto:ruslan@pointrade.com.tr?subject=LIME MM-0001 — X-Power Flat Mop&body=Цікавить X-Power Flat Mop MM-0001. Можна умови поставки?" class="bs-btn">Email</a>
@@ -820,10 +815,6 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
               <div><div class="bs-spec-l">EAN</div><div class="bs-spec-v">8684646050616</div></div>
               <div><div class="bs-spec-l">40' HC</div><div class="bs-spec-v">21 000 шт</div></div>
             </div>
-            <div class="bs-price">
-              <span class="p-price-l">Опт від</span>
-              <span class="p-price">$3.30 <small>/ шт</small></span>
-            </div>
             <div class="bs-actions">
               <a href="https://wa.me/380952855582?text=Доброго дня! Цікавить MM-0002 — X-Power Flat Mop 4-секційна. Можна прайс і умови?" target="_blank" class="bs-btn">WhatsApp</a>
               <a href="mailto:ruslan@pointrade.com.tr?subject=LIME MM-0002 — X-Power Flat Mop&body=Цікавить X-Power Flat Mop MM-0002 (4-секційна). Можна умови поставки?" class="bs-btn">Email</a>
@@ -851,10 +842,6 @@ body.lang-en .review-card p.rv-text.en{display:block!important}
               <div><div class="bs-spec-l">Вага</div><div class="bs-spec-v">8.30 кг</div></div>
               <div><div class="bs-spec-l">EAN</div><div class="bs-spec-v">8683649126229</div></div>
               <div><div class="bs-spec-l">40' HC</div><div class="bs-spec-v">17 000 шт</div></div>
-            </div>
-            <div class="bs-price">
-              <span class="p-price-l">Опт від</span>
-              <span class="p-price">$4.35 <small>/ шт</small></span>
             </div>
             <div class="bs-actions">
               <a href="https://wa.me/380952855582?text=Доброго дня! Цікавить CM-0001 — Easy Click Hands Free Mop. Можна прайс і умови?" target="_blank" class="bs-btn">WhatsApp</a>
@@ -1237,10 +1224,6 @@ function renderCat(cat) {
         ${p.desc_en ? `<div class="p-desc en">${p.desc_en}</div>` : ''}
         <div class="p-specs">
           ${p.specs.map(s => `<div class="p-spec"><div class="p-spec-l">${s[0]}</div><div class="p-spec-v">${s[1]}</div></div>`).join('')}
-        </div>
-        <div class="p-price-row">
-          <span class="p-price-l"><span class="ua">Опт від</span><span class="en">Wholesale from</span></span>
-          <span class="p-price">$${p.price} <small>/ <span class="ua">шт</span><span class="en">pc</span></small></span>
         </div>
         <div class="p-actions">
           <a href="${waLink(p.sku, p.name)}" target="_blank" class="p-btn wa">WhatsApp</a>
